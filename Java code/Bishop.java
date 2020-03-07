@@ -1,17 +1,67 @@
 public final class Bishop extends Piece {
-	public static boolean isValidMove(long[] move) {
+	public static boolean meetCollision(
+		int srcRank, int srcFile,
+		int destRank, int destFile,
+		long allPieces
+		) {
+
+		if(srcRank < destRank) {
+			if(srcFile < destFile) {
+				for(int i = 1; i < (destRank - srcRank - 1); i++) {
+					long rank = Bitboard.RANKS[srcRank + i];
+					long file = Bitboard.FILES[srcFile + i];
+
+					if(((rank & file) & allPieces) != 0) {
+						return false;
+					}
+				}
+			} else {
+				for(int i = 1; i < (destRank - srcRank - 1); i++) {
+					long rank = Bitboard.RANKS[srcRank + i];
+					long file = Bitboard.FILES[srcFile - i];
+
+					if(((rank & file) & allPieces) != 0) {
+						return false;
+					}
+				}
+			}
+		} else {
+			if(srcFile < destFile) {
+				for(int i = 1; i < (srcRank - destRank - 1); i++) {
+					long rank = Bitboard.RANKS[srcRank - i];
+					long file = Bitboard.FILES[srcFile + i];
+
+					if(((rank & file) & allPieces) != 0) {
+						return false;
+					}
+				}
+			} else {
+				for(int i = 1; i < (srcRank - destRank - 1); i++) {
+					long rank = Bitboard.RANKS[srcRank - i];
+					long file = Bitboard.FILES[srcFile - i];
+
+					if(((rank & file) & allPieces) != 0) {
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean isValidMove(long[] move, long allPieces) {
 		long src = move[0], dest = move[1];
-		
-		for(int i = 1; i <= 8; i++) {
-			if(src << ((8*i) + i) == dest || src >> ((8*i) + i) == dest ||
-				src << ((8*i) - i) == dest || src >> ((8*i) - i) == dest ) {
-				return true;
-			}	
-			if(src << ((8*i) + i) < (1 << 64) && src >> (8*i) + i > 0) {
+
+		int srcRank = Bitboard.getRank(src), srcFile = Bitboard.getFile(src);
+		int destRank = Bitboard.getRank(dest), destFile = Bitboard.getFile(dest);
+
+		if(Math.abs(srcRank - destRank) == Math.abs(srcFile - destFile)) {
+			if(!meetCollision(srcRank, srcFile, destRank, destFile, allPieces)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 }
