@@ -64,4 +64,18 @@ public final class Move {
 
 		return convertedMove;
 	}	
+
+	public static void leavePosition(long[] attacker, int index, long pos) {
+		attacker[index] = attacker[index] & (~pos);
+	}
+
+	public static void arrivePosition(long[] attacker, int index, long[] attacked, long pos) {
+		attacker[index] = attacker[index] | pos;
+
+		for(int i = 0; i < attacked.length; i++) {
+			if((attacked[i] & pos) != 0) {
+				attacked[i] = attacked[i] & (~pos);
+			}
+		}
+	}
 }
