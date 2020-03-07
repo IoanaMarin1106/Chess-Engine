@@ -20,7 +20,7 @@ public final class Pawn extends Piece {
 	public static boolean isValidBlackMove(long[] move, long whitePieces) {
 		long src = move[0], dest = move[1];
 
-		if((dest & blackPieces) != 0) {
+		if((dest & whitePieces) != 0) {
 			if((src >> 7) == dest || (src >> 9) == dest) {
 				return true;
 			}
