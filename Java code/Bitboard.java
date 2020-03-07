@@ -78,21 +78,25 @@ public class Bitboard {
 				return false;
 			}
 
+			if((move[1] & allWhitePieces) != 0) {
+				return false;
+			}
+
 			Piece.PieceType type = getPieceType(move[0], color);
 
 			switch(type) {
 				case KING:
-					return King.isValidWhiteMove(move, whitePieces, blackPieces);
+					return King.isValidMove(move);
 				case QUEEN:
-					return Queen.isValidWhiteMove(move, whitePieces, blackPieces);
+					return Queen.isValidMove(move);
 				case ROOK:
-					return Rook.isValidWhiteMove(move, whitePieces, blackPieces);
+					return Rook.isValidMove(move);
 				case BISHOP:
-					return Bishop.isValidWhiteMove(move, whitePieces, blackPieces);
+					return Bishop.isValidMove(move);
 				case KNIGHT:
-					return Knight.isValidWhiteMove(move, whitePieces, blackPieces);
+					return Knight.isValidMove(move);
 				case PAWN:
-					return Pawn.isValidWhiteMove(move, whitePieces, blackPieces);
+					return Pawn.isValidWhiteMove(move, allBlackPieces);
 				default:
 					//naspa coaie
 			}
@@ -101,21 +105,25 @@ public class Bitboard {
 				return false;
 			}
 
+			if((move[1] & allBlackPieces) != 0) {
+				return false;
+			}
+
 			Piece.PieceType type = getPieceType(move[0], color);
 
 			switch(type) {
 				case KING:
-					return King.isValidBlackMove(move, whitePieces, blackPieces);
+					return King.isValidMove(move);
 				case QUEEN:
-					return Queen.isValidBlackMove(move, whitePieces, blackPieces);
+					return Queen.isValidMove(move);
 				case ROOK:
-					return Rook.isValidBlackMove(move, whitePieces, blackPieces);
+					return Rook.isValidMove(move);
 				case BISHOP:
-					return Bishop.isValidBlackMove(move, whitePieces, blackPieces);
+					return Bishop.isValidMove(move);
 				case KNIGHT:
-					return Knight.isValidBlackMove(move, whitePieces, blackPieces);
+					return Knight.isValidMove(move);
 				case PAWN:
-					return Pawn.isValidBlackMove(move, whitePieces, blackPieces);
+					return Pawn.isValidBlackMove(move, allWhitePieces);
 				default:
 					//naspa coaie
 			}
