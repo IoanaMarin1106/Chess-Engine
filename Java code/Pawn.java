@@ -9,7 +9,7 @@ public final class Pawn extends Piece {
 		} else {// avans
 			if(dest == (src << 8)) {
 				return true;
-			} else if(dest == (src << 16) && (src >= (1 << 8) && src < (1 << 16))) {
+			} else if(dest == (src << 16) && (src >= (1L << 8) && src < (1L << 16))) {
 				return true;
 			}
 		}
