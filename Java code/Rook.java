@@ -50,7 +50,7 @@ public final class Rook extends Piece {
 		long srcRank = Bitboard.RANKS[Bitboard.getRank(src)], 
 			srcFile = Bitboard.RANKS[Bitboard.getFile(src)];
 		long destRank = Bitboard.RANKS[Bitboard.getRank(dest)], 
-			destFile = Bitboard.RANKS[Bitboard.getRank(dest)];
+			destFile = Bitboard.RANKS[Bitboard.getFile(dest)];
 
 		/* Sursa si destinatia se afla pe aceeasi coloana */
 		if (srcFile == destFile) { 
