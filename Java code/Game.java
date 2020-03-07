@@ -1,52 +1,31 @@
 import java.util.*;
+import java.io.*;
 
 public class Game {
 	private Bitboard board = new Bitboard();
 	private int protocolVersion;
 
-	@SuppressWarnings("unused")
 	private boolean isPlaying = false;
-	@SuppressWarnings("unused")
-	private boolean isWhite = false;
-	private boolean isWhiteTurn = false;
+	private Piece.PieceColor myColor = null;
+	private Piece.PieceColor turnColor = null;
 
 	private Scanner input = new Scanner(System.in);
+	private BufferedOutputStream output = new BufferedOutputStream(System.out);
 
 	public Game() {
+
 	}
 
-	public void setupXboard() {
-		String com = input.nextLine();
-
-		if (com.equals("xboard")) {
-			System.out.print("\n");
-		}
-
-		com = input.nextLine();
-		protocolVersion = Integer.parseInt((com.split(" "))[1]);
-
-		if (protocolVersion != 2) {
-			System.exit(1);
-		}
-
-		System.out.print("feature done=0 myname=\"Cerebellum Game\" sigint=0 sigterm=0\n");
-		System.out.print("feature debug=1 setboard=1 ping=1 reuse=1 usermove=1 variants=\"normal\"\n");
-		System.out.print("feature done=1\n");
-
-		com = input.nextLine();
-		String[] words = com.split(" ");
-
-		while (words[0].equals("accepted") || words[0].equals("rejected")) {
-			com = input.nextLine();
-			words = com.split(" ");
-		}
+	public void setupFeatures() throws IOException {
+		output.write("feature sigint=0 myname=\"Cerebellum\" done=1\n".getBytes());
+		output.flush();
 	}
 
 	public void newCommand() {
 		board.reset();
 		isPlaying = true;
-		isWhiteTurn = true;
-		isWhite = false;
+		turnColor = Piece.PieceColor.WHITE;
+		myColor = Piece.PieceColor.BLACK;
 		// ceva cu clock
 	}
 
@@ -57,18 +36,18 @@ public class Game {
 
 	public void goCommand() {
 		isPlaying = true;
-		isWhite = isWhiteTurn;
+		myColor = turnColor;
 		// make a move
 	}
 
 	public void whiteCommand() {
-		isWhiteTurn = true;
-		isWhite = false;
+		turnColor = Piece.PieceColor.WHITE;
+		myColor = Piece.PieceColor.BLACK;
 	}
 
 	public void blackCommand() {
-		isWhiteTurn = false;
-		isWhite = true;
+		turnColor = Piece.PieceColor.BLACK;
+		myColor = Piece.PieceColor.WHITE;
 	}
 
 	public void quitCommand() {
@@ -83,39 +62,20 @@ public class Game {
 
 	}
 
-	private boolean isMove(String move) {
-		/* Nu cred ca exista miscare cu lungime mai mica de 4.
-		 * Eg: e4e5. Nu cred ca poti sa ai mai putin. */
-		if (move.length() < 4) {
-			return false;
-		}
-		/* Aici e posibil sa modificam, ca s-ar putea sa fie miscari
-		 * care sa nu aiba numericele asa. */
-		if (Character.isDigit(move.charAt(1)) == false ||
-			Character.isDigit(move.charAt(3)) == false) {
-			return false;
-		}	
-		/* La fel si aici, dar momentan e ok. */
-		if (Character.isLetter(move.charAt(0)) == false ||
-			Character.isLetter(move.charAt(2)) == false) {
-			return false;
-		}
-		/* Si sa verificam si ca literele alea sunt intre a si h,
-		 * ca altfel clar nu sunt miscari. */
-		if (move.charAt(0) < 'a' || move.charAt(0) > 'h' ||
-			move.charAt(2) < 'a' || move.charAt(2) > 'h') {
-			return false;
-		}
+	public void executeCommands () throws IOException {
+		char c = 'a';
 
-		return true;
-	}
-
-	public void executeCommands() {
 		while (true) {
 			String com = input.nextLine();
+
 			String[] words = com.split(" ");
 
-			if (words[0].equals("new")) {
+			if(words[0].equals("xboard")) {
+				output.write("\n".getBytes());
+				output.flush();
+			} else if(words[0].equals("protover")) {
+				setupFeatures();
+			} else if (words[0].equals("new")) {
 				newCommand();
 			} else if (words[0].equals("force")) {
 				forceCommand();
@@ -129,15 +89,16 @@ public class Game {
 				quitCommand();
 			} else if (words[0].equals("resign")) {
 				resignCommand();
-			} else if (isMove(words[0]) == true) {
-				System.out.println("Valid move: " + words[0]);
+			} else if (Move.isMove(words[0]) == true) {
+				output.write(("move " + c + "7" + c + "6\n").getBytes());
+				output.flush();
+				c++;
 			}
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Game game = new Game();
-		// game.setupXboard();
 		game.executeCommands();
 	}
 }
