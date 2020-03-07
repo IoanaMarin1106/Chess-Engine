@@ -12,6 +12,15 @@ public class Game {
 	private Scanner input = new Scanner(System.in);
 	private BufferedOutputStream output = new BufferedOutputStream(System.out);
 
+	/* FOR BITBOARD DEBUG -------------------*/
+	 
+	public Bitboard getBitboard() {
+		return this.board;
+	}
+
+	
+	 /*--------------------------------------*/
+	
 	public Game() {
 
 	}
