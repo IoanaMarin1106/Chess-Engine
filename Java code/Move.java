@@ -42,7 +42,7 @@ public final class Move {
 		long initialPosition = 1 << (8 * (initialY - 1));
 		initialPosition = initialPosition << (initialX - 1);
 		
-		/*
+		/* Delete comment for debugging.
 		System.out.println("#DEBUG for convert move: -------------");
 		System.out.println("#The move: " + move);
 		System.out.println("#Initial X: " + initialX);
