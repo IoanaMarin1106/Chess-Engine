@@ -40,6 +40,9 @@ public class Bitboard {
 		0x0101010101010101L, /* H */
 	};
 
+	private long[] whitePieces = new long[6];
+	private long[] blackPieces = new long[6];
+
 	public static int getRank(long pos) {
 		for(int i = 0; i < RANKS.length; i++) {
 			if((pos & RANKS[i]) != 0) {
@@ -52,16 +55,13 @@ public class Bitboard {
 
 	public static int getFile(long pos) {
 		for(int i = 0; i < FILES.length; i++) {
-			if((pos & RANKS[i]) != 0) {
+			if((pos & FILES[i]) != 0) {
 				return i;
 			}
 		}
 
 		return 0;
 	}
-
-	private long[] whitePieces = new long[6];
-	private long[] blackPieces = new long[6];
 
 	public Bitboard() {
 		reset();
@@ -172,5 +172,13 @@ public class Bitboard {
 		}
 
 		return false;
+	}
+
+	public void makeMove(long[] move, Piece.PieceColor color) {
+		if(color == Piece.PieceColor.WHITE) {
+			Piece.PieceType type = getPieceType(move[0], color);
+			Move.leavePosition(whitePieces, type.getIndex(), move[0]);
+			Move.arrivePosition(whitePieces, type.getIndex(), blackPieces, move[1]);
+		}
 	}
 }
