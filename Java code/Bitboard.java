@@ -107,8 +107,8 @@ public class Bitboard {
 			return false;
 		}
 
-		if(move[0] < 0 || move[0] >= (1 << 64) 
-				|| move[1] < 0 || move[1] >= (1 << 64)) {
+		if(move[0] < 0 || move[0] >= (1L << 64L) 
+				|| move[1] < 0 || move[1] >= (1L << 64L)) {
 			return false;
 		}
 
