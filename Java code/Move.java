@@ -6,8 +6,8 @@ public final class Move {
 		return c - 'a' + 1;
 	}
 
-	public static ArrayList<Long> convertMove(String move) {
-		ArrayList<Long> convertedMove = new ArrayList<Long>(2);
+	public static long[] convertMove(String move) {
+		long[] convertedMove = new long[2];
 		
 		int initialX = charToNumber(move.charAt(0));
 		int initialY = Character.getNumericValue(move.charAt(1));
@@ -34,8 +34,8 @@ public final class Move {
 		long finalPosition = 1 << (8 * (finalY - 1));
 		finalPosition = finalPosition << (finalX - 1);
 		
-		convertedMove.add(initialPosition);
-		convertedMove.add(finalPosition);
+		convertedMove[0] = initialPosition;
+		convertedMove[1] = finalPosition;
 
 		return convertedMove;
 	}	
