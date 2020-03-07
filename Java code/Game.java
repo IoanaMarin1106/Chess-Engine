@@ -58,13 +58,15 @@ public class Game {
 
 	}
 
-	public void moveCommand(String[] words) {
+	public void moveCommand(String word) {
+		long[] move = Move.convertMove(word);
 
+		if(board.isValidMove(move, turnColor)) {
+			board.makeMove(move, turnColor);
+		}
 	}
 
 	public void executeCommands () throws IOException {
-		char c = 'a';
-
 		while (true) {
 			String com = input.nextLine();
 
@@ -90,9 +92,7 @@ public class Game {
 			} else if (words[0].equals("resign")) {
 				resignCommand();
 			} else if (Move.isMove(words[0]) == true) {
-				output.write(("move " + c + "7" + c + "6\n").getBytes());
-				output.flush();
-				c++;
+				moveCommand(words[0]);
 			}
 		}
 	}
