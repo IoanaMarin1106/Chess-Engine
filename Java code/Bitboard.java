@@ -177,8 +177,8 @@ public class Bitboard {
 	public void makeMove(long[] move, Piece.PieceColor color) {
 		if(color == Piece.PieceColor.WHITE) {
 			Piece.PieceType type = getPieceType(move[0], color);
-			Move.leavePosition(whitePieces, type.getIndex(), move[0]);
-			Move.arrivePosition(whitePieces, type.getIndex(), blackPieces, move[1]);
+			Move.unsetPosition(whitePieces, type.getIndex(), move[0]);
+			Move.setPosition(whitePieces, type.getIndex(), blackPieces, move[1]);
 		}
 	}
 }
