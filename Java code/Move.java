@@ -34,8 +34,8 @@ public final class Move {
 		long finalPosition = 1 << (8 * (finalY - 1));
 		finalPosition = finalPosition << (finalX - 1);
 		
-		convertedMove.add( initialPosition);
-		convertedMove.add(1, finalPosition);
+		convertedMove.add(initialPosition);
+		convertedMove.add(finalPosition);
 
 		return convertedMove;
 	}	
