@@ -26,9 +26,9 @@ public class Game {
 			System.exit(1);
 		}
 
-		System.out.print("feature done=0 myname=\"Cerebellum Game\" sigint=0 sigterm=0 ");
-		System.out.print("setboard=1 ping=1 reuse=1 usermove=1 variants=\"normal\"");
-		System.out.print("done=1\n");
+		System.out.print("feature done=0 myname=\"Cerebellum Game\" sigint=0 sigterm=0\n");
+		System.out.print("feature debug=1 setboard=1 ping=1 reuse=1 usermove=1 variants=\"normal\"\n");
+		System.out.print("feature done=1\n");
 
 		com = input.nextLine();
 		String[] words = com.split(" ");
@@ -77,6 +77,7 @@ public class Game {
 	}
 
 	public void moveCommand(String[] words) {
+	
 	}
 
 	public void executeCommands() {
@@ -90,7 +91,6 @@ public class Game {
 				forceCommand();
 			} else if(words[0].equals("go")) {
 				goCommand();
-				System.out.print("move a7a6\n");
 			} else if(words[0].equals("white")) {
 				whiteCommand();
 			} else if(words[0].equals("black")) {
@@ -99,18 +99,22 @@ public class Game {
 				quitCommand();
 			} else if(words[0].equals("resign")) {
 				resignCommand();
-			} else if(words[0].equals("move")) {
+			} else if(words[0].equals("a2a3")) {
 				moveCommand(words);
 				System.out.print("move a7a6\n");
 			} else {
-				System.out.print("move a7a6\n");
+				String s = words[0].substring(0,1);
+
+				if(s.equals("a") || s.equals("b") || s.equals("c") ||s.equals("d") ||
+					s.equals("e") || s.equals("f") || s.equals("g") || s.equals("h"))
+				System.out.printf("move %s7%s6\n", s, s);
 			}
 		}
 	}
 
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.setupXboard();
+		//game.setupXboard();
 		game.executeCommands();
 	}
 }
