@@ -1,9 +1,34 @@
-import java.util.ArrayList;
-
 public final class Move {
 
 	private static int charToNumber(char c) {
 		return c - 'a' + 1;
+	}
+
+	public static boolean isMove(String move) {
+		/* Nu cred ca exista miscare cu lungime mai mica de 4.
+		 * Eg: e4e5. Nu cred ca poti sa ai mai putin. */
+		if (move == null || move.length() < 4) {
+			return false;
+		}
+		/* Aici e posibil sa modificam, ca s-ar putea sa fie miscari
+		 * care sa nu aiba numericele asa. */
+		if (Character.isDigit(move.charAt(1)) == false ||
+			Character.isDigit(move.charAt(3)) == false) {
+			return false;
+		}	
+		/* La fel si aici, dar momentan e ok. */
+		if (Character.isLetter(move.charAt(0)) == false ||
+			Character.isLetter(move.charAt(2)) == false) {
+			return false;
+		}
+		/* Si sa verificam si ca literele alea sunt intre a si h,
+		 * ca altfel clar nu sunt miscari. */
+		if (move.charAt(0) < 'a' || move.charAt(0) > 'h' ||
+			move.charAt(2) < 'a' || move.charAt(2) > 'h') {
+			return false;
+		}
+
+		return true;
 	}
 
 	public static long[] convertMove(String move) {
@@ -40,3 +65,4 @@ public final class Move {
 		return convertedMove;
 	}	
 }
+
