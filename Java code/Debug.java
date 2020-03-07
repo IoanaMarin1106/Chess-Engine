@@ -94,9 +94,10 @@ public class Debug {
 			if((blackPieces[5] & (1L<<i)) != 0)	board[i]='p';
 		}
 		
-		System.out.println("  A B C D E F G H");
+		System.out.println("#   A B C D E F G H");
 		
 		for(int i = 7; i >= 0; i--) {
+			System.out.print("# ");
 			System.out.print(i+1 + " ");
 			
 			for(int j = 0; j < 8; j++) {
@@ -106,9 +107,8 @@ public class Debug {
 			System.out.println();
 		}
 	}
-	 
-	public static void main(String[] args) {
-		Game game = new Game();
+	
+	public static void testDisplayBoard(Game game) {
 		game.newCommand();
 		game.moveCommand("a2a3");
 		game.moveCommand("f2f4");
@@ -122,7 +122,11 @@ public class Debug {
 		game.moveCommand("g1h3");
 		game.moveCommand("h3g5");
 		game.moveCommand("g5h7");
-		
+	}
+	 
+	public static void main(String[] args) {
+		Game game = new Game();
+//		testDisplayBoard(game);
 //		testValidMoves(game);
 		displayBoard(game);
 	}
