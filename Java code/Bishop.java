@@ -4,10 +4,10 @@ public final class Bishop extends Piece {
 		int destRank, int destFile,
 		long allPieces
 		) {
-
+		
 		if(srcRank < destRank) {
 			if(srcFile < destFile) {
-				for(int i = 1; i < (destRank - srcRank - 1); i++) {
+				for(int i = 1; i < (destRank - srcRank); i++) {
 					long rank = Bitboard.RANKS[srcRank + i];
 					long file = Bitboard.FILES[srcFile + i];
 
@@ -16,7 +16,9 @@ public final class Bishop extends Piece {
 					}
 				}
 			} else {
-				for(int i = 1; i < (destRank - srcRank - 1); i++) {
+				System.out.println("cszul asta");
+
+				for(int i = 1; i < (destRank - srcRank); i++) {
 					long rank = Bitboard.RANKS[srcRank + i];
 					long file = Bitboard.FILES[srcFile - i];
 
@@ -27,7 +29,7 @@ public final class Bishop extends Piece {
 			}
 		} else {
 			if(srcFile < destFile) {
-				for(int i = 1; i < (srcRank - destRank - 1); i++) {
+				for(int i = 1; i < (srcRank - destRank); i++) {
 					long rank = Bitboard.RANKS[srcRank - i];
 					long file = Bitboard.FILES[srcFile + i];
 
@@ -36,7 +38,7 @@ public final class Bishop extends Piece {
 					}
 				}
 			} else {
-				for(int i = 1; i < (srcRank - destRank - 1); i++) {
+				for(int i = 1; i < (srcRank - destRank); i++) {
 					long rank = Bitboard.RANKS[srcRank - i];
 					long file = Bitboard.FILES[srcFile - i];
 
@@ -57,6 +59,7 @@ public final class Bishop extends Piece {
 
 		if(Math.abs(srcRank - destRank) == Math.abs(srcFile - destFile)) {
 			if(!meetCollision(srcRank, srcFile, destRank, destFile, allPieces)) {
+				System.out.println("nu i colozie");
 				return true;
 			}
 		}
