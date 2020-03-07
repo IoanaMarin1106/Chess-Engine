@@ -19,7 +19,7 @@ public final class Move {
 		
 		/*
 		System.out.println("#DEBUG for convert move: -------------");
-		System.out.println("The move: " + move);
+		System.out.println("#The move: " + move);
 		System.out.println("#Initial X: " + initialX);
 		System.out.println("#Initial Y: " + initialY);
 		System.out.println("#Final X: " + finalX);
