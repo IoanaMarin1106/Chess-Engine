@@ -12,7 +12,7 @@ public final class Bishop extends Piece {
 					long file = Bitboard.FILES[srcFile + i];
 
 					if(((rank & file) & allPieces) != 0) {
-						return false;
+						return true;
 					}
 				}
 			} else {
@@ -21,7 +21,7 @@ public final class Bishop extends Piece {
 					long file = Bitboard.FILES[srcFile - i];
 
 					if(((rank & file) & allPieces) != 0) {
-						return false;
+						return true;
 					}
 				}
 			}
@@ -32,7 +32,7 @@ public final class Bishop extends Piece {
 					long file = Bitboard.FILES[srcFile + i];
 
 					if(((rank & file) & allPieces) != 0) {
-						return false;
+						return true;
 					}
 				}
 			} else {
@@ -41,13 +41,12 @@ public final class Bishop extends Piece {
 					long file = Bitboard.FILES[srcFile - i];
 
 					if(((rank & file) & allPieces) != 0) {
-						return false;
+						return true;
 					}
 				}
 			}
 		}
-
-		return true;
+		return false;
 	}
 
 	public static boolean isValidMove(long[] move, long allPieces) {
