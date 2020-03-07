@@ -39,6 +39,18 @@ public class Bitboard {
 		0x0202020202020202L, /* G */
 		0x0101010101010101L, /* H */
 	};
+	
+	/* FOR BITBOARD DEBUG -------------------*/
+
+	public long[] getWhitePieces() {
+		return this.whitePieces;
+	}
+	
+	public long[] getBlackPieces() {
+		return this.blackPieces;
+	}
+	
+	 /*--------------------------------------*/
 
 	private long[] whitePieces = new long[6];
 	private long[] blackPieces = new long[6];
@@ -104,11 +116,6 @@ public class Bitboard {
 
 	public boolean isValidMove(long[] move, Piece.PieceColor color) {
 		if(move == null || move.length != 2 || move[0] == move[1]) {
-			return false;
-		}
-
-		if(move[0] < 0 || move[0] >= (1L << 64L) 
-				|| move[1] < 0 || move[1] >= (1L << 64L)) {
 			return false;
 		}
 
