@@ -40,6 +40,26 @@ public class Bitboard {
 		0x0101010101010101L, /* H */
 	};
 
+	public static long getRank(long pos) {
+		for(long rank : RANKS) {
+			if((pos & rank) != 0) {
+				return rank;
+			}
+		}
+
+		return 0;
+	}
+
+	public static long getFile(long pos) {
+		for(long file : FILES) {
+			if((pos & file) != 0) {
+				return file;
+			}
+		}
+
+		return 0;
+	}
+
 	private long[] whitePieces = new long[6];
 	private long[] blackPieces = new long[6];
 
@@ -112,7 +132,7 @@ public class Bitboard {
 				case QUEEN:
 					return Queen.isValidMove(move);
 				case ROOK:
-					return Rook.isValidMove(move);
+					return Rook.isValidMove(move, (allWhitePieces & allBlackPieces));
 				case BISHOP:
 					return Bishop.isValidMove(move);
 				case KNIGHT:
@@ -139,7 +159,7 @@ public class Bitboard {
 				case QUEEN:
 					return Queen.isValidMove(move);
 				case ROOK:
-					return Rook.isValidMove(move);
+					return Rook.isValidMove(move, (allWhitePieces & allBlackPieces));
 				case BISHOP:
 					return Bishop.isValidMove(move);
 				case KNIGHT:
