@@ -39,7 +39,7 @@ public final class Move {
 		int finalX   = charToNumber(move.charAt(2));
 		int finalY   = Character.getNumericValue(move.charAt(3));
 		
-		long initialPosition = 1L << (8 * (initialY - 1));
+		long initialPosition = 1L << (8L * (initialY - 1));
 		initialPosition = initialPosition << (initialX - 1);
 		
 		/* Delete comment for debugging.
@@ -56,7 +56,7 @@ public final class Move {
 		System.out.println("#-------------------------------------");
 		*/
 		
-		long finalPosition = 1L << (8 * (finalY - 1));
+		long finalPosition = 1L << (8L * (finalY - 1));
 		finalPosition = finalPosition << (finalX - 1);
 		
 		convertedMove[0] = initialPosition;
