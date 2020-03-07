@@ -1,6 +1,6 @@
 
 public class Bitboard {
-	private static final long[] whitePiecesReset = {
+	private static final long[] WHITE_RESET = {
 		0x0000000000000010L, /* KING   */
 		0x0000000000000008L, /* QUEEN  */
 		0x0000000000000081L, /* ROOK   */
@@ -9,13 +9,35 @@ public class Bitboard {
 		0x000000000000FF00L, /* PAWN   */
 	};
 
-	private static final long[] blackPiecesReset = {
+	private static final long[] BLACK_RESET = {
 		0x1000000000000000L, /* KING   */
 		0x0800000000000000L, /* QUEEN  */
 		0x8100000000000000L, /* ROOK   */
 		0x2400000000000000L, /* BISHOP */
 		0x4200000000000000L, /* KNIGHT */
 		0x00FF000000000000L, /* PAWN   */
+	};
+
+	public static final long[] RANKS = {
+		0xFF00000000000000L, /* 1 */
+		0x00FF000000000000L, /* 2 */
+		0x0000FF0000000000L, /* 3 */
+		0x000000FF00000000L, /* 4 */
+		0x00000000FF000000L, /* 5 */
+		0x0000000000FF0000L, /* 6 */
+		0x000000000000FF00L, /* 7 */
+		0x00000000000000FFL, /* 8 */
+	};
+
+	public static final long[] FILES = {
+		0x0101010101010101L, /* A */
+		0x0202020202020202L, /* B */
+		0x0404040404040404L, /* C */
+		0x0808080808080808L, /* D */
+		0x1010101010101010L, /* E */
+		0x2020202020202020L, /* F */
+		0x4040404040404040L, /* G */
+		0x8080808080808080L, /* H */
 	};
 
 	private long[] whitePieces = new long[6];
@@ -26,8 +48,8 @@ public class Bitboard {
 	}
 
 	public void reset() {
-		whitePieces = whitePiecesReset;
-		blackPieces = blackPiecesReset;
+		whitePieces = WHITE_RESET;
+		blackPieces = BLACK_RESET;
 	}
 
 	public long getColorPieces(long[] pieces) {
