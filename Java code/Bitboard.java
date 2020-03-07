@@ -40,20 +40,20 @@ public class Bitboard {
 		0x0101010101010101L, /* H */
 	};
 
-	public static long getRank(long pos) {
-		for(long rank : RANKS) {
-			if((pos & rank) != 0) {
-				return rank;
+	public static int getRank(long pos) {
+		for(int i = 0; i < RANKS.length; i++) {
+			if((pos & RANKS[i]) != 0) {
+				return i;
 			}
 		}
 
 		return 0;
 	}
 
-	public static long getFile(long pos) {
-		for(long file : FILES) {
-			if((pos & file) != 0) {
-				return file;
+	public static int getFile(long pos) {
+		for(int i = 0; i < FILES.length; i++) {
+			if((pos & RANKS[i]) != 0) {
+				return i;
 			}
 		}
 
@@ -103,7 +103,7 @@ public class Bitboard {
 	}
 
 	public boolean isValidMove(long[] move, Piece.PieceColor color) {
-		if(move == null || move.length != 2) {
+		if(move == null || move.length != 2 || move[0] == move[1]) {
 			return false;
 		}
 
@@ -130,11 +130,11 @@ public class Bitboard {
 				case KING:
 					return King.isValidMove(move);
 				case QUEEN:
-					return Queen.isValidMove(move);
+					return Queen.isValidMove(move, (allWhitePieces & allBlackPieces));
 				case ROOK:
 					return Rook.isValidMove(move, (allWhitePieces & allBlackPieces));
 				case BISHOP:
-					return Bishop.isValidMove(move);
+					return Bishop.isValidMove(move, (allWhitePieces & allBlackPieces));
 				case KNIGHT:
 					return Knight.isValidMove(move);
 				case PAWN:
@@ -157,11 +157,11 @@ public class Bitboard {
 				case KING:
 					return King.isValidMove(move);
 				case QUEEN:
-					return Queen.isValidMove(move);
+					return Queen.isValidMove(move, (allWhitePieces & allBlackPieces));
 				case ROOK:
 					return Rook.isValidMove(move, (allWhitePieces & allBlackPieces));
 				case BISHOP:
-					return Bishop.isValidMove(move);
+					return Bishop.isValidMove(move, (allWhitePieces & allBlackPieces));
 				case KNIGHT:
 					return Knight.isValidMove(move);
 				case PAWN:
