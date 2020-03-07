@@ -130,11 +130,11 @@ public class Bitboard {
 				case KING:
 					return King.isValidMove(move);
 				case QUEEN:
-					return Queen.isValidMove(move, (allWhitePieces & allBlackPieces));
+					return Queen.isValidMove(move, (allWhitePieces | allBlackPieces));
 				case ROOK:
-					return Rook.isValidMove(move, (allWhitePieces & allBlackPieces));
+					return Rook.isValidMove(move, (allWhitePieces | allBlackPieces));
 				case BISHOP:
-					return Bishop.isValidMove(move, (allWhitePieces & allBlackPieces));
+					return Bishop.isValidMove(move, (allWhitePieces | allBlackPieces));
 				case KNIGHT:
 					return Knight.isValidMove(move);
 				case PAWN:
@@ -157,11 +157,11 @@ public class Bitboard {
 				case KING:
 					return King.isValidMove(move);
 				case QUEEN:
-					return Queen.isValidMove(move, (allWhitePieces & allBlackPieces));
+					return Queen.isValidMove(move, (allWhitePieces | allBlackPieces));
 				case ROOK:
-					return Rook.isValidMove(move, (allWhitePieces & allBlackPieces));
+					return Rook.isValidMove(move, (allWhitePieces | allBlackPieces));
 				case BISHOP:
-					return Bishop.isValidMove(move, (allWhitePieces & allBlackPieces));
+					return Bishop.isValidMove(move, (allWhitePieces | allBlackPieces));
 				case KNIGHT:
 					return Knight.isValidMove(move);
 				case PAWN:
