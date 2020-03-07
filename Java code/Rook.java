@@ -53,15 +53,15 @@ public final class Rook extends Piece {
 			destFile = Bitboard.RANKS[Bitboard.getFile(dest)];
 
 		/* Sursa si destinatia se afla pe aceeasi coloana */
-		if (srcFile == destFile) { 
-			if (meetCollisionForColumns(srcFile, destFile, allPieces) == false) {
+		if (srcFile == destFile) {
+			if (meetCollisionForColumns(src, dest, allPieces) == false) {
 				return true;
 			}
 		}
 
 		/* Sursa si destinatia sunt pe aceeasi linie */
 		if(srcRank == destRank) {
-			if (meetCollisionForLines(srcRank, destRank, allPieces) == false) {
+			if (meetCollisionForLines(src, dest, allPieces) == false) {
 				return true;
 			}
 		}
