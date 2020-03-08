@@ -10,7 +10,7 @@ public final class Rook extends Piece {
 			}
 
 		} else if (src < dest) {
-			/* Altfel se duce in jos scz pt commurile prost puse */
+			/* Altfel se duce de jos in sus scz pt commurile prost puse */
 			while (src != dest) {
 				if (((src << 8L) & allPieces) != 0) {
 					return true;
