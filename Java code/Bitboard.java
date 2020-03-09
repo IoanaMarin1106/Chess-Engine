@@ -65,9 +65,9 @@ public class Bitboard {
 		blackPieces = Arrays.copyOf(BLACK_RESET, BLACK_RESET.length);
 	}
 
-	public static int getRank(long pos) {
+	public static int getRank(long position) {
 		for(int i = 0; i < RANKS.length; i++) {
-			if((pos & RANKS[i]) != 0) {
+			if((position & RANKS[i]) != 0) {
 				return i;
 			}
 		}
@@ -75,9 +75,9 @@ public class Bitboard {
 		return 0;
 	}
 
-	public static int getFile(long pos) {
+	public static int getFile(long position) {
 		for(int i = 0; i < FILES.length; i++) {
-			if((pos & FILES[i]) != 0) {
+			if((position & FILES[i]) != 0) {
 				return i;
 			}
 		}
@@ -156,7 +156,7 @@ public class Bitboard {
 					return Pawn.isValidWhiteMove(move, color2Pieces,
 											(color1Pieces | color2Pieces));
 				} else {
-					return Pawn.isValidBlackMove(move, color1Pieces,
+					return Pawn.isValidBlackMove(move, color2Pieces,
 											(color1Pieces | color2Pieces));
 				}
 			default:
@@ -184,14 +184,16 @@ public class Bitboard {
 		} else {
 			ArrayList<long[]> moves;
 
-			moves = Knight.generateMoves(blackPieces[4]);
+			moves = Queen.generateMoves(blackPieces[1]);
+
 			for(long[] move : moves) {
 				if(isValidMove(move, color)) {
 					return move;
 				}
 			}
 
-			moves = Rook.generateMoves(blackPieces[2]);
+			moves = Bishop.generateMoves(blackPieces[3]);
+
 			for(long[] move : moves) {
 				if(isValidMove(move, color)) {
 					return move;
@@ -200,6 +202,20 @@ public class Bitboard {
 
 			moves = Pawn.generateMoves(blackPieces[5]);
 
+			for(long[] move : moves) {
+				if(isValidMove(move, color)) {
+					return move;
+				}
+			}
+
+			moves = Knight.generateMoves(blackPieces[4]);
+			for(long[] move : moves) {
+				if(isValidMove(move, color)) {
+					return move;
+				}
+			}
+
+			moves = Rook.generateMoves(blackPieces[2]);
 			for(long[] move : moves) {
 				if(isValidMove(move, color)) {
 					return move;
