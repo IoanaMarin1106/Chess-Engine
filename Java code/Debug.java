@@ -6,18 +6,18 @@ public class Debug {
 		long[] move;	
 		
 		System.out.println("PAWN--------------------------------");
-		move = Move.convertMove("c2c4");
-		System.out.println(Pawn.isValidWhiteMove(move, 0));
-		move = Move.convertMove("c2c3");
-		System.out.println(Pawn.isValidWhiteMove(move, 0));
-		move = Move.convertMove("a7a5");
-		System.out.println(Pawn.isValidBlackMove(move, 0));
-		move = Move.convertMove("e5e4");
-		System.out.println(Pawn.isValidBlackMove(move, 0));
+		// move = Move.convertMove("c2c4");
+		// System.out.println(Pawn.isValidWhiteMove(move, 0));
+		// move = Move.convertMove("c2c3");
+		// System.out.println(Pawn.isValidWhiteMove(move, 0));
+		// move = Move.convertMove("a7a5");
+		// System.out.println(Pawn.isValidBlackMove(move, 0));
+		// move = Move.convertMove("e5e4");
+		// System.out.println(Pawn.isValidBlackMove(move, 0));
 		
-		move = Move.convertMove("c3d3");
-		System.out.println(Pawn.isValidBlackMove(move, 0));
-		System.out.println(Pawn.isValidWhiteMove(move, 0));
+		// move = Move.convertMove("c3d3");
+		// System.out.println(Pawn.isValidBlackMove(move, 0));
+		// System.out.println(Pawn.isValidWhiteMove(move, 0));
 		
 		System.out.println("BISHOP--------------------------------");
 		
@@ -109,25 +109,25 @@ public class Debug {
 	}
 	
 	public static void testDisplayBoard(Game game) {
-		game.newCommand();
-		game.moveCommand("a2a3");
-		game.moveCommand("f2f4");
-		game.moveCommand("a4a5");
-		game.moveCommand("b2b5");
-		game.moveCommand("f4f5");
-		game.moveCommand("f5f6");
-		game.moveCommand("f6e7");
-		game.moveCommand("d1b3");
-		game.moveCommand("h1h3");
-		game.moveCommand("g1h3");
-		game.moveCommand("h3g5");
-		game.moveCommand("g5h7");
+		// game.newCommand();
+		// game.moveCommand("a2a3");
+		// game.moveCommand("f2f4");
+		// game.moveCommand("a4a5");
+		// game.moveCommand("b2b5");
+		// game.moveCommand("f4f5");
+		// game.moveCommand("f5f6");
+		// game.moveCommand("f6e7");
+		// game.moveCommand("d1b3");
+		// game.moveCommand("h1h3");
+		// game.moveCommand("g1h3");
+		// game.moveCommand("h3g5");
+		// game.moveCommand("g5h7");
 	}
 	 
-	public static void main(String[] args) {
-		Game game = new Game();
-//		testDisplayBoard(game);
-//		testValidMoves(game);
-		displayBoard(game);
-	}
+// 	public static void main(String[] args) {
+// 		Game game = new Game();
+// //		testDisplayBoard(game);
+// //		testValidMoves(game);
+// 		displayBoard(game);
+// 	}
 }
