@@ -4,14 +4,20 @@ public final class King extends Piece {
 	public static boolean isValidMove(long[] move) {
 		long src = move[0], dest = move[1];
 		
-		if(src << 9 == dest && (src & Bitboard.FILES[0]) == 0) return true;
-		if(src << 8 == dest) return true;
-		if(src << 7 == dest && (src & Bitboard.FILES[7]) == 0) return true;
-		if(src >> 9 == dest && (src & Bitboard.FILES[7]) == 0) return true;
-		if(src >> 8 == dest) return true;
-		if(src >> 7 == dest && (src & Bitboard.FILES[0]) == 0) return true;
-		if(src << 1 == dest) return true;
-		if(src >> 1 == dest) return true;
+		if(src << 1 == dest && (src & Bitboard.FILES[7]) == 0) return true;
+		if(src >> 1 == dest && (src & Bitboard.FILES[0]) == 0) return true;
+
+		if((src & Bitboard.RANKS[0]) == 0) {
+			if(src >> 9 == dest && (src & Bitboard.FILES[7]) == 0) return true;
+			if(src >> 8 == dest) return true;
+			if(src >> 7 == dest && (src & Bitboard.FILES[0]) == 0) return true;
+		}
+
+		if((src & Bitboard.RANKS[7]) == 0) {
+			if(src << 9 == dest && (src & Bitboard.FILES[0]) == 0) return true;
+			if(src << 8 == dest) return true;
+			if(src << 7 == dest && (src & Bitboard.FILES[7]) == 0) return true;
+		}
 		
 		return false;
 	}
