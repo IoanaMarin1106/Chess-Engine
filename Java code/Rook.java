@@ -1,3 +1,5 @@
+import java.util.*;
+
 public final class Rook extends Piece {
 	public static boolean meetCollisionForColumns(long src, long dest, long allPieces) {
 		/* Se duce de sus in jos  */
@@ -65,7 +67,43 @@ public final class Rook extends Piece {
 				return true;
 			}
 		}
-
 		return false;
+	}
+
+	/* 1L poate daca nu merge roxi cica jura ca merge bln */
+	/* pieces = masca turelor */
+	/* La rookRank si rookFile poate fi greseala cu int ala*/
+	public static ArrayList<long[]> generateMoves(long pieces) {
+		ArrayList<long[]> moves = new ArrayList<long[]>();
+
+		while(pieces != 0) {
+			long src = 1;
+
+			while((src & pieces) == 0) {
+				src = (src << 1);
+			}
+
+			pieces = (pieces & (~src)); //sterg bitul asta (aka tura asta)
+
+			int rookRank = Bitboard.getRank(src),
+				rookFile = Bitboard.getFile(src);
+
+			for(int i = 1; i <= rookRank; i++) {
+				moves.add(new long[] {src, (src >> (8 * i))});
+			}
+
+			for (int i = 1; i <= (7 - rookRank); i++) {
+				moves.add(new long[] {src, (src << (8 * i))});
+			}
+
+			for (int i = 1; i <= rookFile; i++) {
+				moves.add(new long[] {src, (src >> i)});
+			}
+
+			for (int i = 1; i <= (7 - rookFile); i++) {
+				moves.add(new long[] {src, (src >> i)});
+			}
+		}
+		return moves;
 	}
 }
