@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public final class Bishop extends Piece {
 	public static boolean meetCollision(
 		int srcRank, int srcFile,
@@ -65,5 +67,61 @@ public final class Bishop extends Piece {
 		}
 
 		return false;
+	}
+
+	public static ArrayList<long[]> generateMoves(long pieces) {
+		ArrayList<long[]> moves = new ArrayList<long[]>();
+
+		while(pieces != 0) {
+			long src = 1;
+
+			while((src & pieces) == 0) {
+				src = (src << 1);
+			}
+
+			pieces = (pieces & (~src));
+
+			int srcRank = Bitboard.getRank(src), srcFile = Bitboard.getFile(src);
+
+			int rank, file;
+
+			rank = srcRank - 1;
+			file = srcFile - 1;
+
+			while(rank >= 0 && file >= 0) {
+				moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
+				rank--;
+				file--;
+			}
+
+			rank = srcRank - 1;
+			file = srcFile + 1;
+
+			while(rank >= 0 && file < 8) {
+				moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
+				rank--;
+				file++;
+			}
+
+			rank = srcRank + 1;
+			file = srcFile - 1;
+
+			while(rank < 8 && file >= 0) {
+				moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
+				rank++;
+				file--;
+			}
+
+			rank = srcRank + 1;
+			file = srcFile + 1;
+
+			while(rank < 8 && file < 8) {
+				moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
+				rank++;
+				file++;
+			}
+		}
+
+		return moves;
 	}
 }
