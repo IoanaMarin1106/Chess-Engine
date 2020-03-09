@@ -56,6 +56,15 @@ public class Bitboard {
 	
 	 /*--------------------------------------*/
 
+	 public Bitboard() {
+		reset();
+	}
+
+	public void reset() {
+		whitePieces = Arrays.copyOf(WHITE_RESET, WHITE_RESET.length);
+		blackPieces = Arrays.copyOf(BLACK_RESET, BLACK_RESET.length);
+	}
+
 	public static int getRank(long pos) {
 		for(int i = 0; i < RANKS.length; i++) {
 			if((pos & RANKS[i]) != 0) {
@@ -74,15 +83,6 @@ public class Bitboard {
 		}
 
 		return 0;
-	}
-
-	public Bitboard() {
-		reset();
-	}
-
-	public void reset() {
-		whitePieces = WHITE_RESET;
-		blackPieces = BLACK_RESET;
 	}
 
 	public long getColorPieces(long[] pieces) {
@@ -120,65 +120,47 @@ public class Bitboard {
 			return false;
 		}
 
-		long allBlackPieces = getColorPieces(blackPieces);
-		long allWhitePieces = getColorPieces(whitePieces);
+		long color1Pieces, color2Pieces;
 
 		if(color == Piece.PieceColor.WHITE) {
-			if((move[0] & allWhitePieces) == 0 || (move[0] & allBlackPieces) != 0) {
-				return false;
-			}
-
-			if((move[1] & allWhitePieces) != 0) {
-				return false;
-			}
-
-			Piece.PieceType type = getPieceType(move[0], color);
-
-			switch(type) {
-				case KING:
-					return King.isValidMove(move);
-				case QUEEN:
-					return Queen.isValidMove(move, (allWhitePieces | allBlackPieces));
-				case ROOK:
-					return Rook.isValidMove(move, (allWhitePieces | allBlackPieces));
-				case BISHOP:
-					return Bishop.isValidMove(move, (allWhitePieces | allBlackPieces));
-				case KNIGHT:
-					return Knight.isValidMove(move);
-				case PAWN:
-					return Pawn.isValidWhiteMove(move, allBlackPieces,
-												(allWhitePieces | allBlackPieces));
-				default:
-					//naspa coaie
-			}
+			color1Pieces = getColorPieces(whitePieces);
+			color2Pieces = getColorPieces(blackPieces);
 		} else {
-			if((move[0] & allWhitePieces) != 0 || (move[0] & allBlackPieces) == 0) {
-				return false;
-			}
+			color1Pieces = getColorPieces(blackPieces);
+			color2Pieces = getColorPieces(whitePieces);
+		}
 
-			if((move[1] & allBlackPieces) != 0) {
-				return false;
-			}
+		if((move[0] & color1Pieces) == 0 || (move[0] & color2Pieces) != 0) {
+			return false;
+		}
 
-			Piece.PieceType type = getPieceType(move[0], color);
+		if((move[1] & color1Pieces) != 0) {
+			return false;
+		}
 
-			switch(type) {
-				case KING:
-					return King.isValidMove(move);
-				case QUEEN:
-					return Queen.isValidMove(move, (allWhitePieces | allBlackPieces));
-				case ROOK:
-					return Rook.isValidMove(move, (allWhitePieces | allBlackPieces));
-				case BISHOP:
-					return Bishop.isValidMove(move, (allWhitePieces | allBlackPieces));
-				case KNIGHT:
-					return Knight.isValidMove(move);
-				case PAWN:
-					return Pawn.isValidBlackMove(move, allWhitePieces,
-												(allWhitePieces | allBlackPieces));
-				default:
-					//naspa coaie
-			}
+		Piece.PieceType type = getPieceType(move[0], color);
+
+		switch(type) {
+			case KING:
+				return King.isValidMove(move);
+			case QUEEN:
+				return Queen.isValidMove(move, (color1Pieces | color2Pieces));
+			case ROOK:
+				return Rook.isValidMove(move, (color1Pieces | color2Pieces));
+			case BISHOP:
+				return Bishop.isValidMove(move, (color1Pieces | color2Pieces));
+			case KNIGHT:
+				return Knight.isValidMove(move);
+			case PAWN:
+				if(color == Piece.PieceColor.WHITE) {
+					return Pawn.isValidWhiteMove(move, color2Pieces,
+											(color1Pieces | color2Pieces));
+				} else {
+					return Pawn.isValidBlackMove(move, color1Pieces,
+											(color1Pieces | color2Pieces));
+				}
+			default:
+				//naspa
 		}
 
 		return false;
@@ -200,13 +182,20 @@ public class Bitboard {
 		if(color == Piece.PieceColor.WHITE) {
 			
 		} else {
-			ArrayList<long[]> pawnMoves = Pawn.generateMoves(blackPieces[5]);
+			ArrayList<long[]> moves = Pawn.generateMoves(blackPieces[5]);
 			long allWhitePieces = getColorPieces(whitePieces);
 			long allBlackPieces = getColorPieces(blackPieces);
 
-			for(long[] move : pawnMoves) {
-				if(Pawn.isValidBlackMove(move, allWhitePieces,
-						(allWhitePieces | allBlackPieces))) {
+			for(long[] move : moves) {
+				if(isValidMove(move, color)) {
+					return move;
+				}
+			}
+
+			moves = King.generateMoves(blackPieces[0]);
+
+			for(long[] move : moves) {
+				if(isValidMove(move, color)) {
 					return move;
 				}
 			}
