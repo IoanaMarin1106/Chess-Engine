@@ -4,8 +4,10 @@ public final class Rook extends Piece {
 	public static boolean meetCollisionForColumns(long src, long dest, long allPieces) {
 		/* Se duce de sus in jos  */
 		if (src > dest) {
+			src = src >> 8;
+
 			while (src != dest) {
-				if (((src >> 8L) & allPieces) != 0) {
+				if ((src & allPieces) != 0) {
 					return true;
 				}
 				src = src >> 8L;
@@ -13,8 +15,10 @@ public final class Rook extends Piece {
 
 		} else if (src < dest) {
 			/* Altfel se duce de jos in sus scz pt commurile prost puse */
+			src = src << 8;
+
 			while (src != dest) {
-				if (((src << 8L) & allPieces) != 0) {
+				if ((src & allPieces) != 0) {
 					return true;
 				}
 				src = src << 8L;
@@ -26,20 +30,24 @@ public final class Rook extends Piece {
 	public static boolean meetCollisionForLines(long src, long dest, long allPieces) {
 		/* Ar trebui sa se duca in dreapta  */
 		if(src > dest) {
+			src = src >> 1;
+
 			while (src != dest) {
-				if (((src << 1L) & allPieces) != 0) {
+				if ((src & allPieces) != 0) {
 					return true;
 				}
-				src = src << 1L;
+				src = src >> 1L;
 			}
 
 		} else if (src < dest) {
 			/* Ar trebui sa se duca in stanga */
+			src = src << 1;
+
 			while (src != dest) {
-				if (((src >> 1L) & allPieces) != 0) {
+				if ((src & allPieces) != 0) {
 					return true;
 				}
-				src = src >> 1L;
+				src = src << 1L;
 			}
 		}
 		return false;
@@ -67,6 +75,7 @@ public final class Rook extends Piece {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -97,7 +106,7 @@ public final class Rook extends Piece {
 			}
 
 			for (int i = 1; i <= rookFile; i++) {
-				moves.add(new long[] {src, (src >> i)});
+				moves.add(new long[] {src, (src << i)});
 			}
 
 			for (int i = 1; i <= (7 - rookFile); i++) {
