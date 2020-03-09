@@ -67,11 +67,28 @@ public class Game {
 
 	}
 
-	public void moveCommand(String word) {
+	public void moveCommand(String word) throws IOException {
 		long[] move = Move.convertMove(word);
 
 		if(board.isValidMove(move, turnColor)) {
 			board.makeMove(move, turnColor);
+			Debug.displayBoard(this);
+
+			if(isPlaying) {
+				long[] myMove = board.generateMove(myColor);
+
+				if(myMove == null) {
+					output.write("resign\n".getBytes());
+					output.flush();
+				} else {
+					board.makeMove(myMove, myColor);
+					
+					String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+					output.write(convertedMove.getBytes());
+					output.flush();
+					Debug.displayBoard(this);
+				}
+			}
 		}
 	}
 
