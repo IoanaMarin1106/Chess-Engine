@@ -5,17 +5,6 @@ public final class Knight extends Piece {
 		long src = move[0], dest = move[1];
 
 		if((src & Bitboard.FILES[7]) == 0) {
-			if((src << 17) == dest &&
-				(src & Bitboard.RANKS[6]) == 0 &&
-				(src & Bitboard.RANKS[7]) == 0)
-				return true;
-			if((src >> 15) == dest &&
-				(src & Bitboard.RANKS[0]) == 0 && 
-				(src & Bitboard.RANKS[1]) == 0)
-				return true;
-		}
-		
-		if((src & Bitboard.FILES[0]) == 0) {
 			if((src << 15) == dest &&
 				(src & Bitboard.RANKS[6]) == 0 &&
 				(src & Bitboard.RANKS[7]) == 0)
@@ -26,25 +15,36 @@ public final class Knight extends Piece {
 				return true;
 		}
 		
+		if((src & Bitboard.FILES[0]) == 0) {
+			if((src << 17) == dest &&
+				(src & Bitboard.RANKS[6]) == 0 &&
+				(src & Bitboard.RANKS[7]) == 0)
+				return true;
+			if((src >> 15) == dest &&
+				(src & Bitboard.RANKS[0]) == 0 && 
+				(src & Bitboard.RANKS[1]) == 0)
+				return true;
+		}
+		
 		if((src & Bitboard.RANKS[0]) == 0) {
 			if((src >> 6) == dest &&
-				(src & Bitboard.FILES[7]) == 0 &&
-				(src & Bitboard.FILES[6]) == 0)
+				(src & Bitboard.FILES[1]) == 0 &&
+				(src & Bitboard.FILES[0]) == 0)
 				return true;
 			if((src >> 10) == dest &&
-				(src & Bitboard.FILES[1]) == 0 && 
-				(src & Bitboard.FILES[0]) == 0)
+				(src & Bitboard.FILES[7]) == 0 && 
+				(src & Bitboard.FILES[6]) == 0)
 				return true;
 		}
 		
 		if((src & Bitboard.RANKS[7]) == 0) {
 			if((src << 10) == dest &&
-				(src & Bitboard.FILES[7]) == 0 &&
-				(src & Bitboard.FILES[6]) == 0)
+				(src & Bitboard.FILES[0]) == 0 &&
+				(src & Bitboard.FILES[1]) == 0)
 				return true;
 			if((src << 6) == dest &&
-				(src & Bitboard.FILES[1]) == 0 &&
-				(src & Bitboard.FILES[0]) == 0)
+				(src & Bitboard.FILES[6]) == 0 &&
+				(src & Bitboard.FILES[7]) == 0)
 				return true;
 		}
 
