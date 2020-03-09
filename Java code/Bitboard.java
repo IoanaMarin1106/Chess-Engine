@@ -1,3 +1,4 @@
+import java.util.*;
 
 public class Bitboard {
 	private static final long[] WHITE_RESET = {
@@ -30,16 +31,19 @@ public class Bitboard {
 	};
 
 	public static final long[] FILES = {
-		0x8080808080808080L, /* A */
-		0x4040404040404040L, /* B */
-		0x2020202020202020L, /* C */
-		0x1010101010101010L, /* D */
-		0x0808080808080808L, /* E */
-		0x0404040404040404L, /* F */
-		0x0202020202020202L, /* G */
-		0x0101010101010101L, /* H */
+		0x8080808080808080L, /* H */
+		0x4040404040404040L, /* G */
+		0x2020202020202020L, /* F */
+		0x1010101010101010L, /* R */
+		0x0808080808080808L, /* D */
+		0x0404040404040404L, /* C */
+		0x0202020202020202L, /* B */
+		0x0101010101010101L, /* A */
 	};
 	
+	private long[] whitePieces = new long[6];
+	private long[] blackPieces = new long[6];
+
 	/* FOR BITBOARD DEBUG -------------------*/
 
 	public long[] getWhitePieces() {
@@ -51,9 +55,6 @@ public class Bitboard {
 	}
 	
 	 /*--------------------------------------*/
-
-	private long[] whitePieces = new long[6];
-	private long[] blackPieces = new long[6];
 
 	public static int getRank(long pos) {
 		for(int i = 0; i < RANKS.length; i++) {
@@ -145,7 +146,8 @@ public class Bitboard {
 				case KNIGHT:
 					return Knight.isValidMove(move);
 				case PAWN:
-					return Pawn.isValidWhiteMove(move, allBlackPieces);
+					return Pawn.isValidWhiteMove(move, allBlackPieces,
+												(allWhitePieces | allBlackPieces));
 				default:
 					//naspa coaie
 			}
@@ -172,7 +174,8 @@ public class Bitboard {
 				case KNIGHT:
 					return Knight.isValidMove(move);
 				case PAWN:
-					return Pawn.isValidBlackMove(move, allWhitePieces);
+					return Pawn.isValidBlackMove(move, allWhitePieces,
+												(allWhitePieces | allBlackPieces));
 				default:
 					//naspa coaie
 			}
@@ -186,6 +189,29 @@ public class Bitboard {
 			Piece.PieceType type = getPieceType(move[0], color);
 			Move.unsetPosition(whitePieces, type.getIndex(), move[0]);
 			Move.setPosition(whitePieces, type.getIndex(), blackPieces, move[1]);
+		} else {
+			Piece.PieceType type = getPieceType(move[0], color);
+			Move.unsetPosition(blackPieces, type.getIndex(), move[0]);
+			Move.setPosition(blackPieces, type.getIndex(), whitePieces, move[1]);
 		}
+	}
+
+	public long[] generateMove(Piece.PieceColor color) {
+		if(color == Piece.PieceColor.WHITE) {
+			
+		} else {
+			ArrayList<long[]> pawnMoves = Pawn.generateMoves(blackPieces[5]);
+			long allWhitePieces = getColorPieces(whitePieces);
+			long allBlackPieces = getColorPieces(blackPieces);
+
+			for(long[] move : pawnMoves) {
+				if(Pawn.isValidBlackMove(move, allWhitePieces,
+						(allWhitePieces | allBlackPieces))) {
+					return move;
+				}
+			}
+		}
+
+		return null;
 	}
 }
