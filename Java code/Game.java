@@ -82,7 +82,7 @@ public class Game {
 					output.flush();
 				} else {
 					board.makeMove(myMove, myColor);
-					
+
 					String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
 					output.write(convertedMove.getBytes());
 					output.flush();
