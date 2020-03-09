@@ -182,9 +182,23 @@ public class Bitboard {
 		if(color == Piece.PieceColor.WHITE) {
 			
 		} else {
-			ArrayList<long[]> moves = Pawn.generateMoves(blackPieces[5]);
-			long allWhitePieces = getColorPieces(whitePieces);
-			long allBlackPieces = getColorPieces(blackPieces);
+			ArrayList<long[]> moves;
+
+			moves = Knight.generateMoves(blackPieces[4]);
+			for(long[] move : moves) {
+				if(isValidMove(move, color)) {
+					return move;
+				}
+			}
+
+			moves = Rook.generateMoves(blackPieces[2]);
+			for(long[] move : moves) {
+				if(isValidMove(move, color)) {
+					return move;
+				}
+			}
+
+			moves = Pawn.generateMoves(blackPieces[5]);
 
 			for(long[] move : moves) {
 				if(isValidMove(move, color)) {
