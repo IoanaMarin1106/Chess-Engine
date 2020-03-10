@@ -14,7 +14,7 @@ public final class Pawn extends Piece {
 				return true;
 			}
 		} else {// avans
-			if(dest == (src << 8L)) {
+			if(dest == (src << 8L) && (src & Bitboard.RANKS[7]) == 0) {
 				return true;
 			} else if(dest == (src << 16L) && (src >= (1L << 8L) && src < (1L << 16L))) {
 				if(((src << 8L) & allPieces) == 0) {
@@ -38,7 +38,7 @@ public final class Pawn extends Piece {
 				return true;
 			}
 		} else {
-			if(dest == (src >> 8L)) {
+			if(dest == (src >> 8L) && (src & Bitboard.RANKS[0]) == 0) {
 				return true;
 			} else if(dest == (src >> 16L) && (src >= (1L << 48L) && src < (1L << 56L))) {
 				if(((src >> 8L) & allPieces) == 0) {
@@ -66,6 +66,10 @@ public final class Pawn extends Piece {
 			moves.add(new long[] {src, (src >> 16)});	// double push
 			moves.add(new long[] {src, (src >> 7)});	// attack
 			moves.add(new long[] {src, (src >> 9)});	// attack
+			moves.add(new long[] {src, (src << 8)});
+			moves.add(new long[] {src, (src << 16)});
+			moves.add(new long[] {src, (src << 7)});
+			moves.add(new long[] {src, (src << 9)});
 		}
 
 		return moves;
