@@ -61,7 +61,6 @@ public final class Bishop extends Piece {
 
 		if(Math.abs(srcRank - destRank) == Math.abs(srcFile - destFile)) {
 			if(!meetCollision(srcRank, srcFile, destRank, destFile, allPieces)) {
-				System.out.println("nu i colozie");
 				return true;
 			}
 		}
