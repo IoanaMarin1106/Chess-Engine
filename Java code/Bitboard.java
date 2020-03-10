@@ -85,95 +85,36 @@ public class Bitboard {
 		return 0;
 	}
 
-	public long getColorPieces(long[] pieces) {
-		long res = 0;
+	public long getAllPieces(long[] pieces) {
+		long allPieces = 0;
 
 		for(long piece : pieces) {
-			res |= piece;
+			allPieces |= piece;
 		}
 
-		return res;
+		return allPieces;
 	}
 
-	// public long flipPiece222(long piece) {
+	public Piece.Type getPieceTypeAtPosition(long position, Piece.Color color) {
+		long[] pieces = (color == Piece.Color.WHITE) ? whitePieces : blackPieces;
 
-	// 	for(int i = 0; i < 4; i++) {
-	// 		long upRank = (RANKS[8-i-1] & piece);
-	// 		upRank = upRank >> 8;
-	// 		upRank = (upRank & (~RANKS[7]));
-	// 		upRank = upRank >> (8 * (8-2*i-2));
-
-	// 		long downRank = (RANKS[i] & piece);
-	// 		downRank = downRank << (8 * (8-2*i-1));
-
-	// 		piece = ((piece & (~RANKS[i])) & (~RANKS[8-i-1]));
-	// 		piece = ((piece | upRank) | downRank);
-	// 	}
-
-	// 	return piece;
-	// }
-
-	// public long flipPiece(long piece) {
-
-	// 	for(int i = 0; i < 32; i++) {
-	// 		long upBit = (piece & (1L << (64 - i - 1)));
-	// 		long downBit = (piece & (1L << i));
-
-	// 		upBit = upBit >> 1;
-	// 		upBit = (upBit & (~(1L << 63)));
-	// 		upBit = upBit >> (64 - 2*i - 2);
-	// 		downBit = downBit << (64 - 2*i - 1);
-
-	// 		piece = ((piece & (~(1L << (64 - i - 1)))) & (~(1L << i)));
-	// 		piece = ((piece | upBit) | downBit);
-	// 	}
-
-	// 	return piece;
-	// }
-
-	// public void flip() {
-
-	// 	for(int i = 0; i < 6; i++) {
-	// 		long aux = flipPiece(blackPieces[i]);
-	// 		blackPieces[i] = flipPiece(whitePieces[i]);
-	// 		whitePieces[i] = aux;
-	// 	}
-	// }
-
-	public Piece.PieceType getPieceType(long pos, Piece.PieceColor color) {
-		if(color == Piece.PieceColor.WHITE) {
-			if((whitePieces[0] & pos) != 0)		return Piece.PieceType.KING;
-			if((whitePieces[1] & pos) != 0)		return Piece.PieceType.QUEEN;
-			if((whitePieces[2] & pos) != 0)		return Piece.PieceType.ROOK;
-			if((whitePieces[3] & pos) != 0)		return Piece.PieceType.BISHOP;
-			if((whitePieces[4] & pos) != 0)		return Piece.PieceType.KNIGHT;
-			if((whitePieces[5] & pos) != 0)		return Piece.PieceType.PAWN;
-		} else {
-			if((blackPieces[0] & pos) != 0)		return Piece.PieceType.KING;
-			if((blackPieces[1] & pos) != 0)		return Piece.PieceType.QUEEN;
-			if((blackPieces[2] & pos) != 0)		return Piece.PieceType.ROOK;
-			if((blackPieces[3] & pos) != 0)		return Piece.PieceType.BISHOP;
-			if((blackPieces[4] & pos) != 0)		return Piece.PieceType.KNIGHT;
-			if((blackPieces[5] & pos) != 0)		return Piece.PieceType.PAWN;
+		for(int i = 0; i < pieces.length; i++) {
+			if((pieces[i] & position) != 0) {
+				return Piece.getType(i);
+			}
 		}
 
 		return null;
 	}
 
-	public boolean isValidMove(long[] move, Piece.PieceColor color) {
+	public boolean isValidMove(long[] move, Piece.Color color) {
 		if(move == null || move.length != 2 || move[0] == move[1]) {
 			return false;
 		}
 
 		long color1Pieces, color2Pieces;
-
-		if(color == Piece.PieceColor.WHITE) {
-			color1Pieces = getColorPieces(whitePieces);
-			color2Pieces = getColorPieces(blackPieces);
-		} else {
-			color1Pieces = getColorPieces(blackPieces);
-			color2Pieces = getColorPieces(whitePieces);
-		}
+		color1Pieces = getAllPieces((color == Piece.Color.WHITE) ? whitePieces : blackPieces);
+		color2Pieces = getAllPieces((color == Piece.Color.WHITE) ? blackPieces : whitePieces);
 
 		if((move[0] & color1Pieces) == 0 || (move[0] & color2Pieces) != 0) {
 			return false;
@@ -183,138 +124,42 @@ public class Bitboard {
 			return false;
 		}
 
-		Piece.PieceType type = getPieceType(move[0], color);
+		Piece.Type type = getPieceTypeAtPosition(move[0], color);
 
-		switch(type) {
-			case KING:
-				return King.isValidMove(move);
-			case QUEEN:
-				return Queen.isValidMove(move, (color1Pieces | color2Pieces));
-			case ROOK:
-				return Rook.isValidMove(move, (color1Pieces | color2Pieces));
-			case BISHOP:
-				return Bishop.isValidMove(move, (color1Pieces | color2Pieces));
-			case KNIGHT:
-				return Knight.isValidMove(move);
-			case PAWN:
-				if(color == Piece.PieceColor.WHITE) {
-					return Pawn.isValidWhiteMove(move, color2Pieces,
-											(color1Pieces | color2Pieces));
-				} else {
-					return Pawn.isValidBlackMove(move, color2Pieces,
-											(color1Pieces | color2Pieces));
-				}
-			default:
-				//naspa
-		}
-
-		return false;
+		return Piece.isValidMove(type, color, move, color1Pieces, color2Pieces);
 	}
 
-	public void makeMove(long[] move, Piece.PieceColor color) {
-		if(color == Piece.PieceColor.WHITE) {
-			Piece.PieceType type = getPieceType(move[0], color);
-			Move.unsetPosition(whitePieces, type.getIndex(), move[0]);
-			Move.setPosition(whitePieces, type.getIndex(), blackPieces, move[1]);
-		} else {
-			Piece.PieceType type = getPieceType(move[0], color);
-			Move.unsetPosition(blackPieces, type.getIndex(), move[0]);
-			Move.setPosition(blackPieces, type.getIndex(), whitePieces, move[1]);
+
+	public void unsetPosition(long[] attacker, int index, long pos) {
+		attacker[index] = attacker[index] & (~pos);
+	}
+	
+	public void setPosition(long[] attacker, int index, long[] attacked, long pos) {
+		attacker[index] = attacker[index] | pos;
+
+		for(int i = 0; i < attacked.length; i++) {
+			if((attacked[i] & pos) != 0) {
+				attacked[i] = attacked[i] & (~pos);
+			}
 		}
 	}
 
-	public long[] generateMove(Piece.PieceColor color) {
-		if(color == Piece.PieceColor.WHITE) {
-			ArrayList<long[]> moves;
+	public void makeMove(long[] move, Piece.Color color) {
+		long[] srcPieces = (color == Piece.Color.WHITE) ? whitePieces : blackPieces;
+		long[] destPieces = (color == Piece.Color.WHITE) ? blackPieces : whitePieces;
 
-			moves = Pawn.generateMoves(whitePieces[5]);
+		Piece.Type type = getPieceTypeAtPosition(move[0], color);
+		unsetPosition(srcPieces, type.getIndex(), move[0]);
+		setPosition(srcPieces, type.getIndex(), destPieces, move[1]);
+	}
 
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
+	public long[] generateMove(Piece.Color color) {
+		long[] movingPieces = (color == Piece.Color.WHITE) ? whitePieces : blackPieces;
 
-			moves = Queen.generateMoves(whitePieces[1]);
+		ArrayList<long[]> moves;
 
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Bishop.generateMoves(whitePieces[3]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-
-			moves = Knight.generateMoves(whitePieces[4]);
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Rook.generateMoves(whitePieces[2]);
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = King.generateMoves(whitePieces[0]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-		} else {
-			ArrayList<long[]> moves;
-			moves = Pawn.generateMoves(blackPieces[5]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Queen.generateMoves(blackPieces[1]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Bishop.generateMoves(blackPieces[3]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-
-			moves = Knight.generateMoves(blackPieces[4]);
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Rook.generateMoves(blackPieces[2]);
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = King.generateMoves(blackPieces[0]);
+		for(int i = 5; i >= 0; i--) { //start with pawn, knight...
+			moves = Piece.generateMoves(Piece.getType(i), movingPieces[i]);
 
 			for(long[] move : moves) {
 				if(isValidMove(move, color)) {
@@ -322,6 +167,7 @@ public class Bitboard {
 				}
 			}
 		}
+
 
 		return null;
 	}
