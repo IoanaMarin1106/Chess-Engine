@@ -43,20 +43,90 @@ public class Game {
 		// checks moves
 	}
 
-	public void goCommand() {
+	/*
+		Dupa Machine plays white
+		go -> turnColor = white, myColor = black
+			-> flip
+			-> turnColor = myColor = black
+
+		Dupa Machine plays black
+		go -> turnColor = black, myColor = white
+			-> flip
+			-> turnColor = myColor = black
+	*/
+	public void goCommand() throws IOException {
 		isPlaying = true;
+
+		if(myColor != turnColor) {
+			board.flip();
+
+			turnColor = Piece.PieceColor.BLACK;
+		}
+
 		myColor = turnColor;
-		// make a move
+
+		long[] myMove = board.generateMove(myColor);
+
+		if(myMove == null) {
+			output.write("resign\n".getBytes());
+			output.flush();
+		} else {
+			board.makeMove(myMove, myColor);
+
+			String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+			output.write(convertedMove.getBytes());
+			output.flush();
+
+			Debug.displayBoard(this);
+		}
+
+		if(turnColor == Piece.PieceColor.WHITE) {
+			turnColor = Piece.PieceColor.BLACK;
+		} else {
+			turnColor = Piece.PieceColor.WHITE;
+		}
 	}
 
-	public void whiteCommand() {
+	public void whiteCommand() throws IOException {
 		turnColor = Piece.PieceColor.WHITE;
 		myColor = Piece.PieceColor.BLACK;
+		isPlaying = true;
+
+		// long[] myMove = board.generateMove(myColor);
+
+		// if(myMove == null) {
+		// 	output.write("resign\n".getBytes());
+		// 	output.flush();
+		// } else {
+		// 	board.makeMove(myMove, myColor);
+
+		// 	String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+		// 	output.write(convertedMove.getBytes());
+		// 	output.flush();
+
+		// 	Debug.displayBoard(this);
+		// }
 	}
 
-	public void blackCommand() {
+	public void blackCommand() throws IOException {
 		turnColor = Piece.PieceColor.BLACK;
 		myColor = Piece.PieceColor.WHITE;
+		isPlaying = true;
+
+		// long[] myMove = board.generateMove(myColor);
+
+		// if(myMove == null) {
+		// 	output.write("resign\n".getBytes());
+		// 	output.flush();
+		// } else {
+		// 	board.makeMove(myMove, myColor);
+
+		// 	String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+		// 	output.write(convertedMove.getBytes());
+		// 	output.flush();
+
+		// 	Debug.displayBoard(this);
+		// }
 	}
 
 	public void quitCommand() {
@@ -68,6 +138,34 @@ public class Game {
 	}
 
 	public void moveCommand(String word) throws IOException {
+		long[] move = Move.convertMove(word);
+
+		board.makeMove(move, turnColor);
+		Debug.displayBoard(this);
+
+		if(isPlaying) {
+			long[] myMove = board.generateMove(myColor);
+
+			if(myMove == null) {
+				output.write("resign\n".getBytes());
+				output.flush();
+			} else {
+				board.makeMove(myMove, myColor);
+				String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+				output.write(convertedMove.getBytes());
+				output.flush();
+				Debug.displayBoard(this);
+			}
+		} else {
+			if(turnColor == Piece.PieceColor.WHITE) {
+				turnColor = Piece.PieceColor.BLACK;
+			} else {
+				turnColor = Piece.PieceColor.WHITE;
+			}
+		}
+	}
+
+	public void moveCommand2222(String word) throws IOException {
 		long[] move = Move.convertMove(word);
 
 		if(board.isValidMove(move, turnColor)) {
