@@ -6,8 +6,8 @@ public class Game {
 	private int protocolVersion;
 
 	private boolean isPlaying = false;
-	private Piece.PieceColor myColor = null;
-	private Piece.PieceColor turnColor = null;
+	private Piece.Color myColor = null;
+	private Piece.Color turnColor = null;
 
 	private Scanner input = new Scanner(System.in);
 	private BufferedOutputStream output = new BufferedOutputStream(System.out);
@@ -25,110 +25,71 @@ public class Game {
 
 	}
 
-	public void setupFeatures() throws IOException {
-		output.write("feature sigint=0 myname=\"Cerebellum\" done=1\n".getBytes());
-		output.flush();
+	public void sendToXboard(String command) {
+		try {
+			output.write(command.getBytes());
+			output.flush();
+		}
+		catch(Exception e) {
+			System.out.println("# Write exception");
+			System.exit(1);
+		}
+	}
+
+	public void setupFeatures() {
+		sendToXboard("feature sigint=0 myname=\"Cerebellum\" done=1\n");
+	}
+
+	public void makeMove() {
+		long[] myMove = board.generateMove(myColor);
+
+		if(myMove == null) {
+			sendToXboard("resign\n");
+		} else {
+			board.makeMove(myMove, myColor);
+			String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+			sendToXboard(convertedMove);
+			Debug.displayBoard(this);
+		}
+	}
+
+	public void switchTurnColor() {
+		if(turnColor == Piece.Color.WHITE) {
+			turnColor = Piece.Color.BLACK;
+		} else {
+			turnColor = Piece.Color.WHITE;
+		}
 	}
 
 	public void newCommand() {
 		board.reset();
 		isPlaying = true;
-		turnColor = Piece.PieceColor.WHITE;
-		myColor = Piece.PieceColor.BLACK;
-		// ceva cu clock
+		turnColor = Piece.Color.WHITE;
+		myColor = Piece.Color.BLACK;
 	}
 
 	public void forceCommand() {
 		isPlaying = false;
-		// checks moves
 	}
 
-	/*
-		Dupa Machine plays white
-		go -> turnColor = white, myColor = black
-			-> flip
-			-> turnColor = myColor = black
-
-		Dupa Machine plays black
-		go -> turnColor = black, myColor = white
-			-> flip
-			-> turnColor = myColor = black
-	*/
-	public void goCommand() throws IOException {
+	public void goCommand() {
 		isPlaying = true;
-
-		// if(myColor != turnColor) {
-		// 	board.flip();
-
-		// 	turnColor = Piece.PieceColor.BLACK;
-		// }
-
 		myColor = turnColor;
-		System.out.println("# "+turnColor);
 
-		long[] myMove = board.generateMove(myColor);
-
-		if(myMove == null) {
-			System.out.println("# da resign de aici");
-			output.write("resign\n".getBytes());
-			output.flush();
-		} else {
-			board.makeMove(myMove, myColor);
-
-			String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
-			output.write(convertedMove.getBytes());
-			output.flush();
-
-			Debug.displayBoard(this);
-		}
-
-		if(turnColor == Piece.PieceColor.WHITE) {
-			turnColor = Piece.PieceColor.BLACK;
-		} else {
-			turnColor = Piece.PieceColor.WHITE;
-		}
+		makeMove();
+		switchTurnColor();
 	}
 
-	public void whiteCommand() throws IOException {
-		turnColor = Piece.PieceColor.WHITE;
-		myColor = Piece.PieceColor.BLACK;
+	public void whiteCommand() {
+		turnColor = Piece.Color.WHITE;
+		myColor = Piece.Color.BLACK;
 		isPlaying = true;
-
-		// long[] myMove = board.generateMove(myColor);
-
-		// if(myMove == null) {
-		// 	output.write("resign\n".getBytes());
-		// 	output.flush();
-		// } else {
-		// 	board.makeMove(myMove, myColor);
-
-		// 	String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
-		// 	output.write(convertedMove.getBytes());
-		// 	output.flush();
-
-		// 	Debug.displayBoard(this);
-		// }
 	}
 
-	public void blackCommand() throws IOException {
-		turnColor = Piece.PieceColor.BLACK;
-		myColor = Piece.PieceColor.WHITE;
+	public void blackCommand() {
+		turnColor = Piece.Color.BLACK;
+		myColor = Piece.Color.WHITE;
 		isPlaying = true;
-
-		// long[] myMove = board.generateMove(myColor);
-
-		// if(myMove == null) {
-		// 	output.write("resign\n".getBytes());
-		// 	output.flush();
-		// } else {
-		// 	board.makeMove(myMove, myColor);
-
-		// 	String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
-		// 	output.write(convertedMove.getBytes());
-		// 	output.flush();
-
-		// 	Debug.displayBoard(this);
-		// }
 	}
 
 	public void quitCommand() {
@@ -136,71 +97,30 @@ public class Game {
 	}
 
 	public void resignCommand() {
-
+		quitCommand(); // se termina jocul
 	}
 
-	public void moveCommand(String word) throws IOException {
+	public void moveCommand(String word) {
 		long[] move = Move.convertMove(word);
 
 		board.makeMove(move, turnColor);
 		Debug.displayBoard(this);
 
 		if(isPlaying) {
-			long[] myMove = board.generateMove(myColor);
-
-			if(myMove == null) {
-				output.write("resign\n".getBytes());
-				output.flush();
-			} else {
-				board.makeMove(myMove, myColor);
-				String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
-				output.write(convertedMove.getBytes());
-				output.flush();
-				Debug.displayBoard(this);
-			}
+			makeMove();
 		} else {
-			if(turnColor == Piece.PieceColor.WHITE) {
-				turnColor = Piece.PieceColor.BLACK;
-			} else {
-				turnColor = Piece.PieceColor.WHITE;
-			}
+			switchTurnColor();
 		}
 	}
 
-	public void moveCommand2222(String word) throws IOException {
-		long[] move = Move.convertMove(word);
-
-		if(board.isValidMove(move, turnColor)) {
-			board.makeMove(move, turnColor);
-			Debug.displayBoard(this);
-
-			if(isPlaying) {
-				long[] myMove = board.generateMove(myColor);
-
-				if(myMove == null) {
-					output.write("resign\n".getBytes());
-					output.flush();
-				} else {
-					board.makeMove(myMove, myColor);
-
-					String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
-					output.write(convertedMove.getBytes());
-					output.flush();
-					Debug.displayBoard(this);
-				}
-			}
-		}
-	}
-
-	public void executeCommands () throws IOException {
+	public void executeCommands () {
 		while (true) {
 			String com = input.nextLine();
 
 			String[] words = com.split(" ");
 
 			if(words[0].equals("xboard")) {
-				output.write("\n".getBytes());
-				output.flush();
+				sendToXboard("\n");
 			} else if(words[0].equals("protover")) {
 				setupFeatures();
 			} else if (words[0].equals("new")) {
