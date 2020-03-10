@@ -1,328 +1,230 @@
 import java.util.*;
+import java.io.*;
 
-public class Bitboard {
-	private static final long[] WHITE_RESET = {
-		0x0000000000000010L, /* KING   */
-		0x0000000000000008L, /* QUEEN  */
-		0x0000000000000081L, /* ROOK   */
-		0x0000000000000024L, /* BISHOP */
-		0x0000000000000042L, /* KNIGHT */
-		0x000000000000FF00L, /* PAWN   */
-	};
+public class Game {
+	private Bitboard board = new Bitboard();
+	private int protocolVersion;
 
-	private static final long[] BLACK_RESET = {
-		0x1000000000000000L, /* KING   */
-		0x0800000000000000L, /* QUEEN  */
-		0x8100000000000000L, /* ROOK   */
-		0x2400000000000000L, /* BISHOP */
-		0x4200000000000000L, /* KNIGHT */
-		0x00FF000000000000L, /* PAWN   */
-	};
+	private boolean isPlaying = false;
+	private Piece.PieceColor myColor = null;
+	private Piece.PieceColor turnColor = null;
 
-	public static final long[] RANKS = {
-		0x00000000000000FFL, /* 1 */
-		0x000000000000FF00L, /* 2 */
-		0x0000000000FF0000L, /* 3 */
-		0x00000000FF000000L, /* 4 */
-		0x000000FF00000000L, /* 5 */
-		0x0000FF0000000000L, /* 6 */
-		0x00FF000000000000L, /* 7 */
-		0xFF00000000000000L, /* 8 */
-	};
-
-	public static final long[] FILES = {
-		0x8080808080808080L, /* H */
-		0x4040404040404040L, /* G */
-		0x2020202020202020L, /* F */
-		0x1010101010101010L, /* R */
-		0x0808080808080808L, /* D */
-		0x0404040404040404L, /* C */
-		0x0202020202020202L, /* B */
-		0x0101010101010101L, /* A */
-	};
-	
-	private long[] whitePieces = new long[6];
-	private long[] blackPieces = new long[6];
+	private Scanner input = new Scanner(System.in);
+	private BufferedOutputStream output = new BufferedOutputStream(System.out);
 
 	/* FOR BITBOARD DEBUG -------------------*/
+	 
+	public Bitboard getBitboard() {
+		return this.board;
+	}
 
-	public long[] getWhitePieces() {
-		return this.whitePieces;
-	}
-	
-	public long[] getBlackPieces() {
-		return this.blackPieces;
-	}
 	
 	 /*--------------------------------------*/
+	
+	public Game() {
 
-	 public Bitboard() {
-		reset();
 	}
 
-	public void reset() {
-		whitePieces = Arrays.copyOf(WHITE_RESET, WHITE_RESET.length);
-		blackPieces = Arrays.copyOf(BLACK_RESET, BLACK_RESET.length);
+	public void setupFeatures() throws IOException {
+		output.write("feature sigint=0 myname=\"Cerebellum\" done=1\n".getBytes());
+		output.flush();
 	}
 
-	public static int getRank(long position) {
-		for(int i = 0; i < RANKS.length; i++) {
-			if((position & RANKS[i]) != 0) {
-				return i;
+	public void newCommand() {
+		board.reset();
+		isPlaying = true;
+		turnColor = Piece.PieceColor.WHITE;
+		myColor = Piece.PieceColor.BLACK;
+		// ceva cu clock
+	}
+
+	public void forceCommand() {
+		isPlaying = false;
+		// checks moves
+	}
+
+	/*
+		Dupa Machine plays white
+		go -> turnColor = white, myColor = black
+			-> flip
+			-> turnColor = myColor = black
+
+		Dupa Machine plays black
+		go -> turnColor = black, myColor = white
+			-> flip
+			-> turnColor = myColor = black
+	*/
+	public void goCommand() throws IOException {
+		isPlaying = true;
+
+		// if(myColor != turnColor) {
+		// 	board.flip();
+
+		// 	turnColor = Piece.PieceColor.BLACK;
+		// }
+
+		myColor = turnColor;
+		System.out.println("# "+turnColor);
+
+		long[] myMove = board.generateMove(myColor);
+
+		if(myMove == null) {
+			System.out.println("# da resign de aici");
+			output.write("resign\n".getBytes());
+			output.flush();
+		} else {
+			board.makeMove(myMove, myColor);
+
+			String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+			output.write(convertedMove.getBytes());
+			output.flush();
+
+			Debug.displayBoard(this);
+		}
+
+		if(turnColor == Piece.PieceColor.WHITE) {
+			turnColor = Piece.PieceColor.BLACK;
+		} else {
+			turnColor = Piece.PieceColor.WHITE;
+		}
+	}
+
+	public void whiteCommand() throws IOException {
+		turnColor = Piece.PieceColor.WHITE;
+		myColor = Piece.PieceColor.BLACK;
+		isPlaying = true;
+
+		// long[] myMove = board.generateMove(myColor);
+
+		// if(myMove == null) {
+		// 	output.write("resign\n".getBytes());
+		// 	output.flush();
+		// } else {
+		// 	board.makeMove(myMove, myColor);
+
+		// 	String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+		// 	output.write(convertedMove.getBytes());
+		// 	output.flush();
+
+		// 	Debug.displayBoard(this);
+		// }
+	}
+
+	public void blackCommand() throws IOException {
+		turnColor = Piece.PieceColor.BLACK;
+		myColor = Piece.PieceColor.WHITE;
+		isPlaying = true;
+
+		// long[] myMove = board.generateMove(myColor);
+
+		// if(myMove == null) {
+		// 	output.write("resign\n".getBytes());
+		// 	output.flush();
+		// } else {
+		// 	board.makeMove(myMove, myColor);
+
+		// 	String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+		// 	output.write(convertedMove.getBytes());
+		// 	output.flush();
+
+		// 	Debug.displayBoard(this);
+		// }
+	}
+
+	public void quitCommand() {
+		System.exit(0);
+	}
+
+	public void resignCommand() {
+
+	}
+
+	public void moveCommand(String word) throws IOException {
+		long[] move = Move.convertMove(word);
+
+		board.makeMove(move, turnColor);
+		Debug.displayBoard(this);
+
+		if(isPlaying) {
+			long[] myMove = board.generateMove(myColor);
+
+			if(myMove == null) {
+				output.write("resign\n".getBytes());
+				output.flush();
+			} else {
+				board.makeMove(myMove, myColor);
+				String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+				output.write(convertedMove.getBytes());
+				output.flush();
+				Debug.displayBoard(this);
+			}
+		} else {
+			if(turnColor == Piece.PieceColor.WHITE) {
+				turnColor = Piece.PieceColor.BLACK;
+			} else {
+				turnColor = Piece.PieceColor.WHITE;
 			}
 		}
-
-		return 0;
 	}
 
-	public static int getFile(long position) {
-		for(int i = 0; i < FILES.length; i++) {
-			if((position & FILES[i]) != 0) {
-				return i;
-			}
-		}
+	public void moveCommand2222(String word) throws IOException {
+		long[] move = Move.convertMove(word);
 
-		return 0;
-	}
+		if(board.isValidMove(move, turnColor)) {
+			board.makeMove(move, turnColor);
+			Debug.displayBoard(this);
 
-	public long getColorPieces(long[] pieces) {
-		long res = 0;
+			if(isPlaying) {
+				long[] myMove = board.generateMove(myColor);
 
-		for(long piece : pieces) {
-			res |= piece;
-		}
-
-		return res;
-	}
-
-	// public long flipPiece222(long piece) {
-
-	// 	for(int i = 0; i < 4; i++) {
-	// 		long upRank = (RANKS[8-i-1] & piece);
-	// 		upRank = upRank >> 8;
-	// 		upRank = (upRank & (~RANKS[7]));
-	// 		upRank = upRank >> (8 * (8-2*i-2));
-
-	// 		long downRank = (RANKS[i] & piece);
-	// 		downRank = downRank << (8 * (8-2*i-1));
-
-	// 		piece = ((piece & (~RANKS[i])) & (~RANKS[8-i-1]));
-	// 		piece = ((piece | upRank) | downRank);
-	// 	}
-
-	// 	return piece;
-	// }
-
-	// public long flipPiece(long piece) {
-
-	// 	for(int i = 0; i < 32; i++) {
-	// 		long upBit = (piece & (1L << (64 - i - 1)));
-	// 		long downBit = (piece & (1L << i));
-
-	// 		upBit = upBit >> 1;
-	// 		upBit = (upBit & (~(1L << 63)));
-	// 		upBit = upBit >> (64 - 2*i - 2);
-	// 		downBit = downBit << (64 - 2*i - 1);
-
-	// 		piece = ((piece & (~(1L << (64 - i - 1)))) & (~(1L << i)));
-	// 		piece = ((piece | upBit) | downBit);
-	// 	}
-
-	// 	return piece;
-	// }
-
-	// public void flip() {
-
-	// 	for(int i = 0; i < 6; i++) {
-	// 		long aux = flipPiece(blackPieces[i]);
-	// 		blackPieces[i] = flipPiece(whitePieces[i]);
-	// 		whitePieces[i] = aux;
-	// 	}
-	// }
-
-	public Piece.PieceType getPieceType(long pos, Piece.PieceColor color) {
-		if(color == Piece.PieceColor.WHITE) {
-			if((whitePieces[0] & pos) != 0)		return Piece.PieceType.KING;
-			if((whitePieces[1] & pos) != 0)		return Piece.PieceType.QUEEN;
-			if((whitePieces[2] & pos) != 0)		return Piece.PieceType.ROOK;
-			if((whitePieces[3] & pos) != 0)		return Piece.PieceType.BISHOP;
-			if((whitePieces[4] & pos) != 0)		return Piece.PieceType.KNIGHT;
-			if((whitePieces[5] & pos) != 0)		return Piece.PieceType.PAWN;
-		} else {
-			if((blackPieces[0] & pos) != 0)		return Piece.PieceType.KING;
-			if((blackPieces[1] & pos) != 0)		return Piece.PieceType.QUEEN;
-			if((blackPieces[2] & pos) != 0)		return Piece.PieceType.ROOK;
-			if((blackPieces[3] & pos) != 0)		return Piece.PieceType.BISHOP;
-			if((blackPieces[4] & pos) != 0)		return Piece.PieceType.KNIGHT;
-			if((blackPieces[5] & pos) != 0)		return Piece.PieceType.PAWN;
-		}
-
-		return null;
-	}
-
-	public boolean isValidMove(long[] move, Piece.PieceColor color) {
-		if(move == null || move.length != 2 || move[0] == move[1]) {
-			return false;
-		}
-
-		long color1Pieces, color2Pieces;
-
-		if(color == Piece.PieceColor.WHITE) {
-			color1Pieces = getColorPieces(whitePieces);
-			color2Pieces = getColorPieces(blackPieces);
-		} else {
-			color1Pieces = getColorPieces(blackPieces);
-			color2Pieces = getColorPieces(whitePieces);
-		}
-
-		if((move[0] & color1Pieces) == 0 || (move[0] & color2Pieces) != 0) {
-			return false;
-		}
-
-		if((move[1] & color1Pieces) != 0) {
-			return false;
-		}
-
-		Piece.PieceType type = getPieceType(move[0], color);
-
-		switch(type) {
-			case KING:
-				return King.isValidMove(move);
-			case QUEEN:
-				return Queen.isValidMove(move, (color1Pieces | color2Pieces));
-			case ROOK:
-				return Rook.isValidMove(move, (color1Pieces | color2Pieces));
-			case BISHOP:
-				return Bishop.isValidMove(move, (color1Pieces | color2Pieces));
-			case KNIGHT:
-				return Knight.isValidMove(move);
-			case PAWN:
-				if(color == Piece.PieceColor.WHITE) {
-					return Pawn.isValidWhiteMove(move, color2Pieces,
-											(color1Pieces | color2Pieces));
+				if(myMove == null) {
+					output.write("resign\n".getBytes());
+					output.flush();
 				} else {
-					return Pawn.isValidBlackMove(move, color2Pieces,
-											(color1Pieces | color2Pieces));
+					board.makeMove(myMove, myColor);
+
+					String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
+					output.write(convertedMove.getBytes());
+					output.flush();
+					Debug.displayBoard(this);
 				}
-			default:
-				//naspa
-		}
-
-		return false;
-	}
-
-	public void makeMove(long[] move, Piece.PieceColor color) {
-		if(color == Piece.PieceColor.WHITE) {
-			Piece.PieceType type = getPieceType(move[0], color);
-			Move.unsetPosition(whitePieces, type.getIndex(), move[0]);
-			Move.setPosition(whitePieces, type.getIndex(), blackPieces, move[1]);
-		} else {
-			Piece.PieceType type = getPieceType(move[0], color);
-			Move.unsetPosition(blackPieces, type.getIndex(), move[0]);
-			Move.setPosition(blackPieces, type.getIndex(), whitePieces, move[1]);
+			}
 		}
 	}
 
-	public long[] generateMove(Piece.PieceColor color) {
-		if(color == Piece.PieceColor.WHITE) {
-			ArrayList<long[]> moves;
+	public void executeCommands () throws IOException {
+		while (true) {
+			String com = input.nextLine();
 
-			moves = Pawn.generateMoves(whitePieces[5]);
+			String[] words = com.split(" ");
 
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Queen.generateMoves(whitePieces[1]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Bishop.generateMoves(whitePieces[3]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-
-			moves = Knight.generateMoves(whitePieces[4]);
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Rook.generateMoves(whitePieces[2]);
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = King.generateMoves(whitePieces[0]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-		} else {
-			ArrayList<long[]> moves;
-			moves = Pawn.generateMoves(blackPieces[5]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Queen.generateMoves(blackPieces[1]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Bishop.generateMoves(blackPieces[3]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-
-			moves = Knight.generateMoves(blackPieces[4]);
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = Rook.generateMoves(blackPieces[2]);
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
-
-			moves = King.generateMoves(blackPieces[0]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
+			if(words[0].equals("xboard")) {
+				output.write("\n".getBytes());
+				output.flush();
+			} else if(words[0].equals("protover")) {
+				setupFeatures();
+			} else if (words[0].equals("new")) {
+				newCommand();
+			} else if (words[0].equals("force")) {
+				forceCommand();
+			} else if (words[0].equals("go")) {
+				goCommand();
+			} else if (words[0].equals("white")) {
+				whiteCommand();
+			} else if (words[0].equals("black")) {
+				blackCommand();
+			} else if (words[0].equals("quit")) {
+				quitCommand();
+			} else if (words[0].equals("resign")) {
+				resignCommand();
+			} else if (Move.isMove(words[0]) == true) {
+				moveCommand(words[0]);
 			}
 		}
+	}
 
-		return null;
+	public static void main(String[] args) throws IOException {
+		Game game = new Game();
+		game.executeCommands();
 	}
 }
