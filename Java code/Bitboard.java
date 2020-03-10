@@ -95,6 +95,48 @@ public class Bitboard {
 		return res;
 	}
 
+	public long flipPiece222(long piece) {
+
+		for(int i = 0; i < 4; i++) {
+			long upRank = (RANKS[8-i-1] & piece);
+			upRank = upRank >> 8;
+			upRank = (upRank & (~RANKS[7]));
+			upRank = upRank >> (8 * (8-2*i-2));
+
+			long downRank = (RANKS[i] & piece);
+			downRank = downRank << (8 * (8-2*i-1));
+
+			piece = ((piece & (~RANKS[i])) & (~RANKS[8-i-1]));
+			piece = ((piece | upRank) | downRank);
+		}
+
+		return piece;
+	}
+
+	public long flipPiece(long piece) {
+		for(int i = 0; i < 32; i++) {
+			long upBit = (piece & (1L << (64 - i - 1)));
+			long downBit = (piece & (1L << i));
+
+			upBit = upBit >> (64 - 2*i - 1);
+			downBit = downBit << (64 - 2*i - 1);
+
+			piece = ((piece & (~(1L << (64 - i)))) & (~(1L << i)));
+			piece = ((piece | upBit) | downBit);
+		}
+
+		return piece;
+	}
+
+	public void flip() {
+
+		for(int i = 0; i < 6; i++) {
+			long aux = flipPiece(blackPieces[i]);
+			blackPieces[i] = flipPiece(whitePieces[i]);
+			whitePieces[i] = aux;
+		}
+	}
+
 	public Piece.PieceType getPieceType(long pos, Piece.PieceColor color) {
 		if(color == Piece.PieceColor.WHITE) {
 			if((whitePieces[0] & pos) != 0)		return Piece.PieceType.KING;
@@ -183,6 +225,13 @@ public class Bitboard {
 			
 		} else {
 			ArrayList<long[]> moves;
+			moves = Pawn.generateMoves(blackPieces[5]);
+
+			for(long[] move : moves) {
+				if(isValidMove(move, color)) {
+					return move;
+				}
+			}
 
 			moves = Queen.generateMoves(blackPieces[1]);
 
@@ -200,13 +249,6 @@ public class Bitboard {
 				}
 			}
 
-			moves = Pawn.generateMoves(blackPieces[5]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
 
 			moves = Knight.generateMoves(blackPieces[4]);
 			for(long[] move : moves) {
