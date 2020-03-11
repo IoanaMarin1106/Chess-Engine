@@ -179,26 +179,16 @@ public class Bitboard {
 
 		ArrayList<long[]> moves;
 
-		System.out.println("# ajunge in ischeck");
-		System.out.println("# defenderColor = " + defenderColor + " attackerColor = " + attackerColor);
-
 		for(int i = 5; i >= 0; i--) {
 			moves = Piece.generateMoves(Piece.getType(i), attacker[i]);
-			System.out.println("# length de moves = " + moves.size());
 
 			for(long[] move : moves) {
-				// System.out.println("#");
-				// System.out.println("#blabla" + isValidMove(move, attackerColor));
-				// System.out.println("#" + (move[1] == defender[0]));
 				if(isValidMove(move, attackerColor) && (move[1] == defender[0])) {
-					// System.out.println("# ajunge in isvalidmove");
 					return true;
 				}
-				System.out.println("# m am intors din is valid move");
 			}
-			// System.out.println("#CE PLMedgbewhvfbhewgbfgewfgweyhgfew" + (6-i));
 		}
-		// System.out.println("#nust daca aj aici");
+
 		return false;
 	}
 }
