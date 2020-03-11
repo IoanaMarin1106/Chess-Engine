@@ -134,12 +134,12 @@ public class Bitboard {
 		attacker[index] = attacker[index] & (~pos);
 	}
 	
-	public void setPosition(long[] attacker, int index, long[] attacked, long pos) {
+	public void setPosition(long[] attacker, int index, long[] defender, long pos) {
 		attacker[index] = attacker[index] | pos;
 
-		for(int i = 0; i < attacked.length; i++) {
-			if((attacked[i] & pos) != 0) {
-				attacked[i] = attacked[i] & (~pos);
+		for(int i = 0; i < defender.length; i++) {
+			if((defender[i] & pos) != 0) {
+				defender[i] = defender[i] & (~pos);
 			}
 		}
 	}
@@ -149,6 +149,7 @@ public class Bitboard {
 		long[] destPieces = (color == Piece.Color.WHITE) ? blackPieces : whitePieces;
 
 		Piece.Type type = getPieceTypeAtPosition(move[0], color);
+		System.out.println("in makeMove color = " + color + " type = " + type);
 		unsetPosition(srcPieces, type.getIndex(), move[0]);
 		setPosition(srcPieces, type.getIndex(), destPieces, move[1]);
 	}
@@ -168,7 +169,35 @@ public class Bitboard {
 			}
 		}
 
-
 		return null;
+	}
+
+	public boolean isCheck(Piece.Color defenderColor) {
+		long[] defender = (defenderColor == Piece.Color.WHITE) ? whitePieces : blackPieces;
+		long[] attacker = (defenderColor == Piece.Color.WHITE) ? blackPieces : whitePieces;
+		Piece.Color attackerColor = (defenderColor == Piece.Color.WHITE) ? Piece.Color.BLACK :
+																		Piece.Color.WHITE;
+
+		ArrayList<long[]> moves;
+
+		System.out.println("# ajunge in ischeck");
+		System.out.println("defenderColor = " + defenderColor + " attackerColor = " + attackerColor);
+
+		for(int i = 5; i >= 0; i--) {
+			moves = Piece.generateMoves(Piece.getType(i), attacker[i]);
+
+			for(long[] move : moves) {
+				System.out.println("#");
+				System.out.println("#blabla" + isValidMove(move, attackerColor));
+				System.out.println("#" + (move[1] == defender[0]));
+				if(isValidMove(move, attackerColor) && (move[1] == defender[0])) {
+					System.out.println("# ajunge in isvalidmove");
+					return true;
+				}
+			}
+			System.out.println("#CE PLMedgbewhvfbhewgbfgewfgweyhgfew" + (6-i));
+		}
+		System.out.println("#nust daca aj aici");
+		return false;
 	}
 }
