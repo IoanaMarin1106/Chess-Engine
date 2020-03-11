@@ -48,10 +48,10 @@ public class Game {
 		} else {
 			board.makeMove(myMove, myColor);
 
-			if(board.isCheck(myColor)) {
-				sendToXboard("resign\n");
-				return;
-			}
+			// if(board.isCheck(myColor)) {
+			// 	sendToXboard("resign\n");
+			// 	return;
+			// }
 
 			String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
 			sendToXboard(convertedMove);
