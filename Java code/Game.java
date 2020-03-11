@@ -43,10 +43,16 @@ public class Game {
 	public void makeMove() {
 		long[] myMove = board.generateMove(myColor);
 
-		if(myMove == null) {
+		if(myMove == null ) {
 			sendToXboard("resign\n");
 		} else {
 			board.makeMove(myMove, myColor);
+
+			if(board.isCheck(myColor)) {
+				sendToXboard("resign\n");
+				return;
+			}
+
 			String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
 			sendToXboard(convertedMove);
 			Debug.displayBoard(this);
@@ -106,6 +112,11 @@ public class Game {
 		board.makeMove(move, turnColor);
 		Debug.displayBoard(this);
 
+		if(board.isCheck(myColor)) {
+			sendToXboard("resign\n");
+			return;
+		}
+		
 		if(isPlaying) {
 			makeMove();
 		} else {
