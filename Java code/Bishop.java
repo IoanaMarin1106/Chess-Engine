@@ -1,6 +1,27 @@
 import java.util.ArrayList;
 
+/**
+ * This class stands for the Bishop piece in the chess game.
+ * 
+ * It has three static methods: one that checks if the piece 
+ * meets a collision by performing the given move, one that
+ * checks if a move is valid and one that generates all the
+ * moves possible.
+ *
+ * @author Creierul si Cerebelii
+ */
 public final class Bishop extends Piece {
+
+	/**
+ 	 * Method which checks if a Bishop meets a collision by
+ 	 * performing the given move.
+ 	 * @param srcRank the line on which the Bishop is initially located.
+ 	 * @param srcFile the column on which the Bishop is initially located.
+ 	 * @param destRank the line on which the Bishop is after the move.
+ 	 * @param destFile the column on which the Bishop is after the move.
+ 	 * @param allPieces the current state of the board.
+ 	 * @return true in case the Bishop meets a collion, false otherwise.
+ 	 */
 	public static boolean meetCollision(
 		int srcRank, int srcFile,
 		int destRank, int destFile,
@@ -53,6 +74,14 @@ public final class Bishop extends Piece {
 		return false;
 	}
 
+	/**
+	 *	Method which checks if a move is valid. This method returns
+	 *	true if the move is valid for the Bishop piece, for instance,
+	 *	the Bishop can only move diagonally.
+	 *	@param move the move to be checked.
+	 *	@param allPieces the current state of the board.
+	 *	@return true for valid move, false otherwise. 
+	 */
 	public static boolean isValidMove(long[] move, long allPieces) {
 		long src = move[0], dest = move[1];
 
@@ -68,6 +97,12 @@ public final class Bishop extends Piece {
 		return false;
 	}
 
+	/**
+	 *	Method which generates an ArrayList of possible moves for
+	 *	the Bishop piece. It only generates valid moves.
+	 *	@param pieces only the positions on which the Bishops are on the board.
+	 *	@return an array with all moves possible for the Bishop.
+	 */
 	public static ArrayList<long[]> generateMoves(long pieces) {
 		ArrayList<long[]> moves = new ArrayList<long[]>();
 
@@ -124,3 +159,4 @@ public final class Bishop extends Piece {
 		return moves;
 	}
 }
+
