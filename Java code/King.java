@@ -22,12 +22,12 @@ public final class King extends Piece {
 		long src = move[0], dest = move[1];
 		
 		if(src << 1 == dest && (src & Bitboard.FILES[7]) == 0) return true;
-		if(src >> 1 == dest && (src & Bitboard.FILES[0]) == 0) return true;
+		if(src >>> 1 == dest && (src & Bitboard.FILES[0]) == 0) return true;
 
 		if((src & Bitboard.RANKS[0]) == 0) {
-			if(src >> 9 == dest && (src & Bitboard.FILES[7]) == 0) return true;
-			if(src >> 8 == dest) return true;
-			if(src >> 7 == dest && (src & Bitboard.FILES[0]) == 0) return true;
+			if(src >>> 9 == dest && (src & Bitboard.FILES[7]) == 0) return true;
+			if(src >>> 8 == dest) return true;
+			if(src >>> 7 == dest && (src & Bitboard.FILES[0]) == 0) return true;
 		}
 
 		if((src & Bitboard.RANKS[7]) == 0) {
@@ -51,11 +51,11 @@ public final class King extends Piece {
 		moves.add(new long[] {src, (src << 9)});
 		moves.add(new long[] {src, (src << 8)});
 		moves.add(new long[] {src, (src << 7)});
-		moves.add(new long[] {src, (src >> 9)});
-		moves.add(new long[] {src, (src >> 8)});
-		moves.add(new long[] {src, (src >> 7)});
+		moves.add(new long[] {src, (src >>> 9)});
+		moves.add(new long[] {src, (src >>> 8)});
+		moves.add(new long[] {src, (src >>> 7)});
 		moves.add(new long[] {src, (src << 1)});
-		moves.add(new long[] {src, (src >> 1)});
+		moves.add(new long[] {src, (src >>> 1)});
 		
 		return moves;
 	}
