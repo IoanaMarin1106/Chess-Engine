@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /**
  * This class stands for the Knight piece in the chess game.
  * It has two static methods: one that checks if a move
- * is valid, and one that generates all the moves possible.
+ * is valid and one that generates all the moves possible.
  * 
  * @author Creierul si Cerebelii
  *
