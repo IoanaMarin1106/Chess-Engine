@@ -9,7 +9,7 @@ import java.util.*;
  * black color(this means that it cand only move to the bottom of
  * the board) and one that generates all the moves possible.
  *
- *	@author Creierul si Cerebelii
+ * @author Creierul si Cerebelii
  *
  */
 public final class Pawn extends Piece {
