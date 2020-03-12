@@ -1,32 +1,32 @@
 import java.util.*;
 
 /**
- *	This class stands for the Rook piece in the chess game.
+ * This class stands for the Rook piece in the chess game.
  * 
- *	It has four static methods: one that checks if the piece
- *	meets a collision by moving to the column it is on, one
- *	that checks if the piece meets a collision by moving to
- *	the line it is on, one that checks if a move is valid 
- *	and one that generates all the moves possible.
+ * It has four static methods: one that checks if the piece
+ * meets a collision by moving to the column it is on, one
+ * that checks if the piece meets a collision by moving to
+ * the line it is on, one that checks if a move is valid 
+ * and one that generates all the moves possible.
  *
- *	@author Creierul si Cerebelii
+ * @author Creierul si Cerebelii
  *
  */
 public final class Rook extends Piece {
 
 	/**
-	 *	Method which checks if a Rook meets a collision
-	 *	by moving to the column it is on.
+	 * Method which checks if a Rook meets a collision
+	 * by moving to the column it is on.
 	 *
-	 *	This method returns false if the Rook will not meet
-	 *	a collision by moving to the column it is on and it 
-	 *	returns true otherwise.
+	 * This method returns false if the Rook will not meet
+	 * a collision by moving to the column it is on and it 
+	 * returns true otherwise.
 	 *
-	 *	@param file the column on which the Rook can be moved.
-	 *	@param srcRank the line on which the Rook is initially located.
-	 *	@param destRank the line on which the Rook is after the move.
-	 *	@param allPieces the current state of the board.
-	 *	@return true in case the Rook meets a collion, false otherwise.
+	 * @param file the column on which the Rook can be moved.
+	 * @param srcRank the line on which the Rook is initially located.
+	 * @param destRank the line on which the Rook is after the move.
+	 * @param allPieces the current state of the board.
+	 * @return true in case the Rook meets a collion, false otherwise.
 	 */
 	public static boolean meetCollisionForColumns(
 		long file,
@@ -52,18 +52,18 @@ public final class Rook extends Piece {
 	}
 
 	/**
-	 *	Method which checks if a Rook meets a collision
-	 *	by moving to the line it is on.
+	 * Method which checks if a Rook meets a collision
+	 * by moving to the line it is on.
 	 *
-	 *	This method returns false if the Rook will not meet
-	 *	a collision by moving to the line it is on and it 
-	 *	returns true otherwise.
+	 * This method returns false if the Rook will not meet
+	 * a collision by moving to the line it is on and it 
+	 * returns true otherwise.
 	 *
-	 *	@param rank the line on which the Rook can be moved.
-	 *	@param srcFile the column on which the Rook is initially located.
-	 *	@param destFile the column on which the Rook is after the move.
-	 *	@param allPieces the current state of the board.
-	 *	@return true in case the Rook meets a collion, false otherwise.
+	 * @param rank the line on which the Rook can be moved.
+	 * @param srcFile the column on which the Rook is initially located.
+	 * @param destFile the column on which the Rook is after the move.
+	 * @param allPieces the current state of the board.
+	 * @return true in case the Rook meets a collion, false otherwise.
 	 */
 	public static boolean meetCollisionForLines(
 		long rank,
@@ -89,13 +89,12 @@ public final class Rook extends Piece {
 	}
 
 	/**
-	 *	Method which checks if a move is valid. This method returns
-	 *	true if the move is valid for the Rook piece, for instance,
-	 *	the Rook can only move straight.
-	 *	@param move the move to be checked.
-	 *	@param allPieces the current state of the board.
-	 *	@return true for valid move, false otherwise. 
-	 *	
+	 * Method which checks if a move is valid. This method returns
+	 * true if the move is valid for the Rook piece, for instance,
+	 * the Rook can only move straight.
+	 * @param move the move to be checked.
+	 * @param allPieces the current state of the board.
+	 * @return true for valid move, false otherwise.	
 	 */
 	public static boolean isValidMove(
 		long[] move, 
@@ -128,10 +127,10 @@ public final class Rook extends Piece {
 
 
 	/**
-	 *	Method which generates an ArrayList of possible moves for
-	 *	the Rook piece. It only generates valid moves.
-	 *	@param pieces only the positions on which the Rooks are on the board.
-	 *	@return an array with all moves possible for the Rook.
+	 * Method which generates an ArrayList of possible moves for
+	 * the Rook piece. It only generates valid moves.
+	 * @param pieces only the positions on which the Rooks are on the board.
+	 * @return an array with all moves possible for the Rook.
 	 */
 	public static ArrayList<long[]> generateMoves(long pieces) {
 		ArrayList<long[]> moves = new ArrayList<long[]>();
