@@ -23,6 +23,9 @@ public final class Queen extends Piece {
 	}
 
 	/**
+	 * Methods which generates an ArrayList of possible moves
+	 * for the Queen piece, by generating all the moves possible
+	 * for Rook and Bishop. It only generates valid moves.
 	 * @param piece the position of the Queen.
 	 * @return an array with all moves possible for the Queen.
 	 */
