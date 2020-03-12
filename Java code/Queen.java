@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 /**
  * This class stands for the Queen piece in the chess game.
+ *
  * It has two static methods: one that checks if a move
  * is valid, and one that generates all the moves possible.
  * 
