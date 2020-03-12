@@ -3,7 +3,7 @@
  * method to display the board in the console/terminal
  * and also has some methods for testing.
  * 
- * @author Creieru' si Cerebelii
+ * @author Creierul si Cerebelii
  *
  */
 public class Debug {
