@@ -1,6 +1,6 @@
 /**
  * This class is designed for the Move Command received
- * from the xboard. It basically has methods to check
+ * from the xboard/winboard. It basically has methods to check
  * if a string is either a move or something else,
  * to convert the string to a move and vice-versa. 
  * 
