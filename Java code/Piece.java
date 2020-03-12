@@ -7,7 +7,7 @@ import java.util.*;
  * board, another enum that contains the two colors of
  * the pieces in a chess game, a static method that returns
  * the type of a piece according to its index, a static 
- * method that is a move is valid and a static method 
+ * method that checks if a move is valid and a static method 
  * that generates all the moves possible.
  * 
  * @author Creierul si Cerebelii
