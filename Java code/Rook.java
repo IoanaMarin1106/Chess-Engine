@@ -148,7 +148,7 @@ public final class Rook extends Piece {
 				rookFile = Bitboard.getFile(src);
 
 			for(int i = 1; i <= rookRank; i++) {
-				moves.add(new long[] {src, (src >> (8 * i))});
+				moves.add(new long[] {src, (src >>> (8 * i))});
 			}
 
 			for (int i = 1; i <= (7 - rookRank); i++) {
@@ -156,7 +156,7 @@ public final class Rook extends Piece {
 			}
 
 			for (int i = 1; i <= rookFile; i++) {
-				moves.add(new long[] {src, (src >> i)});
+				moves.add(new long[] {src, (src >>> i)});
 			}
 
 			for (int i = 1; i <= (7 - rookFile); i++) {
