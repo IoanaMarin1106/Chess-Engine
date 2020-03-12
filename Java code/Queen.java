@@ -15,7 +15,7 @@ public final class Queen extends Piece {
 	 * for instance, it will return false if a player tries to 
 	 * move the Queen as a Knight.
 	 * @param move the move to be checked.
-	 * @param allPieces the current state of board.
+	 * @param allPieces the current state of the board.
 	 * @return true for valid move, false otherwise.
 	 */
 	public static boolean isValidMove(long[] move, long allPieces) {
