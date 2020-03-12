@@ -52,7 +52,7 @@ public class Game {
 	public Game() {}
 
 	/**
-	 *	Method that sends the engine's command for the Xboard.
+	 * Method that sends the engine's command for the Xboard.
 	 */
 	public void sendToXboard(String command) {
 		try {
@@ -249,7 +249,7 @@ public class Game {
 	/**
 	 * Main method of the program, which creates a new game object
 	 * to execute the commands received from Xboard.
-	 * @param args unsed
+	 * @param args unsed.
 	 */
 	public static void main(String[] args) {
 		Game game = new Game();
