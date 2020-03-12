@@ -5,7 +5,7 @@ import java.util.ArrayList;
  * It has two static methods: one that checks if a move
  * is valid, and one that generates all the moves possible.
  * 
- * @author Creieru' si Cerebelii
+ * @author Creierul si Cerebelii
  *
  */
 public final class King extends Piece {
