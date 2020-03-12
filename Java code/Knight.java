@@ -26,7 +26,7 @@ public final class Knight extends Piece {
 				(src & Bitboard.RANKS[6]) == 0 &&
 				(src & Bitboard.RANKS[7]) == 0)
 				return true;
-			if((src >> 15) == dest &&
+			if((src >>> 15) == dest &&
 				(src & Bitboard.RANKS[0]) == 0 && 
 				(src & Bitboard.RANKS[1]) == 0)
 				return true;
@@ -37,31 +37,31 @@ public final class Knight extends Piece {
 				(src & Bitboard.RANKS[6]) == 0 &&
 				(src & Bitboard.RANKS[7]) == 0)
 				return true;
-			if((src >> 17) == dest &&
+			if((src >>> 17) == dest &&
 				(src & Bitboard.RANKS[0]) == 0 &&
 				(src & Bitboard.RANKS[1]) == 0)
 				return true;
 		}
 		
 		if((src & Bitboard.RANKS[0]) == 0) {
-			if((src >> 6) == dest &&
-				(src & Bitboard.FILES[7]) == 0 &&
-				(src & Bitboard.FILES[6]) == 0)
-				return true;
-			if((src >> 10) == dest &&
-				(src & Bitboard.FILES[1]) == 0 && 
+			if((src >>> 6) == dest &&
+				(src & Bitboard.FILES[1]) == 0 &&
 				(src & Bitboard.FILES[0]) == 0)
+				return true;
+			if((src >>> 10) == dest &&
+				(src & Bitboard.FILES[7]) == 0 && 
+				(src & Bitboard.FILES[6]) == 0)
 				return true;
 		}
 		
 		if((src & Bitboard.RANKS[7]) == 0) {
 			if((src << 10) == dest &&
-				(src & Bitboard.FILES[7]) == 0 &&
-				(src & Bitboard.FILES[6]) == 0)
-				return true;
-			if((src << 6) == dest &&
 				(src & Bitboard.FILES[1]) == 0 &&
 				(src & Bitboard.FILES[0]) == 0)
+				return true;
+			if((src << 6) == dest &&
+				(src & Bitboard.FILES[7]) == 0 &&
+				(src & Bitboard.FILES[6]) == 0)
 				return true;
 		}
 
@@ -90,10 +90,10 @@ public final class Knight extends Piece {
 			moves.add(new long[] { src, (src << 10) });
 			moves.add(new long[] { src, (src << 15) });
 			moves.add(new long[] { src, (src << 17) });
-			moves.add(new long[] { src, (src >> 6) });
-			moves.add(new long[] { src, (src >> 10) });
-			moves.add(new long[] { src, (src >> 15) });
-			moves.add(new long[] { src, (src >> 17) });
+			moves.add(new long[] { src, (src >>> 6) });
+			moves.add(new long[] { src, (src >>> 10) });
+			moves.add(new long[] { src, (src >>> 15) });
+			moves.add(new long[] { src, (src >>> 17) });
 		}
 
 		return moves;
