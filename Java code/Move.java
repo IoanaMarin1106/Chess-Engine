@@ -4,7 +4,7 @@
  * if a string is either a move or something else,
  * to convert the string to a move and vice-versa. 
  * 
- * @author Creieru' si Cerebelii
+ * @author Creierul si Cerebelii
  *
  */
 public final class Move {
@@ -80,24 +80,9 @@ public final class Move {
 		convertedMove[0] = initialPosition;
 		convertedMove[1] = finalPosition;
 		
-		/*
-		Delete comment for correct debugging. 		
-		System.out.println("#DEBUG for convert move: -------------");
-		System.out.println("#The move: " + move);
-		System.out.println("#Initial X: " + initialX);
-		System.out.println("#Initial Y: " + initialY);
-		System.out.println("#Final X: " + finalX);
-		System.out.println("#Final Y: " + finalY);
-		System.out.print(("#Initial Position: "));
-		System.out.println(8 * (initialY - 1) + (initialX - 1));
-		System.out.print(("#Final Position: "));
-		System.out.println(8 * (finalY - 1) + (finalX - 1));
-		System.out.println("#-------------------------------------");
-		*/
-
 		return convertedMove;
 	}
-
+	
 	/**
 	 * Method which converts a move to a string. The array of two longs,
 	 * first representing the source and second representing the destinations,
@@ -140,5 +125,27 @@ public final class Move {
 		}
 	
 		return convertedPosition;
+	}
+	
+	/**	------------ FOR CORRECT DEBUGGING ---------------
+	 * This methods displays the initial and finals coordinates
+	 * and also the little-endian rank-file mapping.
+	 */
+	public static void displayMoveConversion(
+			int initialX, int initialY,
+			int finalX, int finalY,
+			String move
+			) {
+		System.out.println("#DEBUG for convert move: -------------");
+		System.out.println("#The move: " + move);
+		System.out.println("#Initial X: " + initialX);
+		System.out.println("#Initial Y: " + initialY);
+		System.out.println("#Final X: " + finalX);
+		System.out.println("#Final Y: " + finalY);
+		System.out.print(("#Initial Position: "));
+		System.out.println(8 * (initialY - 1) + (initialX - 1));
+		System.out.print(("#Final Position: "));
+		System.out.println(8 * (finalY - 1) + (finalX - 1));
+		System.out.println("#-------------------------------------");		
 	}
 }
