@@ -130,7 +130,7 @@ public final class Move {
 	}
 	
 	/**	------------ FOR CORRECT DEBUGGING ---------------
-	 * This methods displays the initial and finals coordinates
+	 * This methods displays the initial and final coordinates
 	 * and also the little-endian rank-file mapping.
 	 */
 	public static void displayMoveConversion(
