@@ -75,21 +75,21 @@ public final class Pawn extends Piece {
 		* The Pawn is on attack.
 		*/
 		if((dest & whitePieces) != 0) {
-			if((src >> 7L) == dest && (src & Bitboard.FILES[0]) == 0) {
+			if((src >>> 7L) == dest && (src & Bitboard.FILES[0]) == 0) {
 				return true;
 			}
 
-			if((src >> 9L) == dest && (src & Bitboard.FILES[7]) == 0) {
+			if((src >>> 9L) == dest && (src & Bitboard.FILES[7]) == 0) {
 				return true;
 			}
 		} else {
 			/**
 			* The Pawn is pushing forward.
 			*/
-			if(dest == (src >> 8L) && (src & Bitboard.RANKS[0]) == 0) {
+			if(dest == (src >>> 8L) && (src & Bitboard.RANKS[0]) == 0) {
 				return true;
-			} else if(dest == (src >> 16L) && (src >= (1L << 48L) && src < (1L << 56L))) {
-				if(((src >> 8L) & allPieces) == 0) {
+			} else if(dest == (src >>> 16L) && (src >= (1L << 48L) && src < (1L << 56L))) {
+				if(((src >>> 8L) & allPieces) == 0) {
 					return true;
 				}
 			}
@@ -116,10 +116,10 @@ public final class Pawn extends Piece {
 
 			pieces = (pieces & (~src));
 
-			moves.add(new long[] {src, (src >> 8)});
-			moves.add(new long[] {src, (src >> 16)});
-			moves.add(new long[] {src, (src >> 7)});	
-			moves.add(new long[] {src, (src >> 9)});	
+			moves.add(new long[] {src, (src >>> 8)});
+			moves.add(new long[] {src, (src >>> 16)});
+			moves.add(new long[] {src, (src >>> 7)});	
+			moves.add(new long[] {src, (src >>> 9)});	
 			moves.add(new long[] {src, (src << 8)});
 			moves.add(new long[] {src, (src << 16)});
 			moves.add(new long[] {src, (src << 7)});
