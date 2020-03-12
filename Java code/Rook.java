@@ -1,66 +1,33 @@
 import java.util.*;
 
+/**
+ *	This class stands for the Rook piece in the chess game.
+ * 
+ *	It has four static methods: one that checks if the piece
+ *	meets a collision by moving to the column it is on, one
+ *	that checks if the piece meets a collision by moving to
+ *	the line it is on, one that checks if a move is valid 
+ *	and one that generates all the moves possible.
+ *
+ *	@author Creierul si Cerebelii
+ *
+ */
 public final class Rook extends Piece {
-	// public static boolean meetCollisionForColumns2(long src, long dest, long allPieces) {
-	// 	/* Se duce de sus in jos  */
-	// 	if (src > dest) {
-	// 		System.out.println("# src = " + src + " dest = " + dest);
-	// 		src = src >> 8;
 
-	// 		while (src != dest) {
-	// 			//System.out.println("# bucla infinita 1");
-	// 			if ((src & allPieces) != 0) {
-	// 				return true;
-	// 			}
-	// 			src = src >> 8L;
-	// 		}
-
-	// 	} else if (src < dest) {
-	// 		/* Altfel se duce de jos in sus scz pt commurile prost puse */
-	// 		src = src << 8;
-
-	// 		while (src != dest) {
-	// 			System.out.println("# bucla infinita 2");
-
-	// 			if ((src & allPieces) != 0) {
-	// 				return true;
-	// 			}
-	// 			src = src << 8L;
-	// 		}
-	// 	}
-	// 	return false;
-	// }
-
-	// public static boolean meetCollisionForLines2(long src, long dest, long allPieces) {
-	// 	/* Ar trebui sa se duca in dreapta  */
-	// 	if(src > dest) {
-	// 		src = src >> 1;
-
-	// 		while (src != dest) {
-	// 			System.out.println("# bucla infinita 3");
-
-	// 			if ((src & allPieces) != 0) {
-	// 				return true;
-	// 			}
-	// 			src = src >> 1L;
-	// 		}
-
-	// 	} else if (src < dest) {
-	// 		/* Ar trebui sa se duca in stanga */
-	// 		src = src << 1;
-
-	// 		while (src != dest) {
-	// 			System.out.println("# bucla infinita 4");
-
-	// 			if ((src & allPieces) != 0) {
-	// 				return true;
-	// 			}
-	// 			src = src << 1L;
-	// 		}
-	// 	}
-	// 	return false;
-	// }
-
+	/**
+	 *	Method which checks if a Rook meets a collision
+	 *	by moving to the column it is on.
+	 *
+	 *	This method returns false if the Rook will not meet
+	 *	a collision by moving to the column it is on and it 
+	 *	returns true otherwise.
+	 *
+	 *	@param file the column on which the Rook can be moved.
+	 *	@param srcRank the line on which the Rook is initially located.
+	 *	@param destRank the line on which the Rook is after the move.
+	 *	@param allPieces the current state of the board.
+	 *	@return true in case the Rook meets a collion, false otherwise.
+	 */
 	public static boolean meetCollisionForColumns(
 		long file,
 		int srcRank, int destRank,
@@ -84,6 +51,20 @@ public final class Rook extends Piece {
 		return false;
 	}
 
+	/**
+	 *	Method which checks if a Rook meets a collision
+	 *	by moving to the line it is on.
+	 *
+	 *	This method returns false if the Rook will not meet
+	 *	a collision by moving to the line it is on and it 
+	 *	returns true otherwise.
+	 *
+	 *	@param rank the line on which the Rook can be moved.
+	 *	@param srcFile the column on which the Rook is initially located.
+	 *	@param destFile the column on which the Rook is after the move.
+	 *	@param allPieces the current state of the board.
+	 *	@return true in case the Rook meets a collion, false otherwise.
+	 */
 	public static boolean meetCollisionForLines(
 		long rank,
 		int srcFile, int destFile,
@@ -107,19 +88,25 @@ public final class Rook extends Piece {
 		return false;
 	}
 
-	public static boolean isValidMove(long[] move, long allPieces) {
+	/**
+	 *	Method which checks if a move is valid. This method returns
+	 *	true if the move is valid for the Rook piece, for instance,
+	 *	the Rook can only move straight.
+	 *	@param move the move to be checked.
+	 *	@param allPieces the current state of the board.
+	 *	@return true for valid move, false otherwise. 
+	 *	
+	 */
+	public static boolean isValidMove(
+		long[] move, 
+		long allPieces
+		) {
 
 		long src = move[0], dest = move[1];
-
-		// long srcRank = Bitboard.RANKS[Bitboard.getRank(src)], 
-		// 	srcFile = Bitboard.RANKS[Bitboard.getFile(src)];
-		// long destRank = Bitboard.RANKS[Bitboard.getRank(dest)], 
-		// 	destFile = Bitboard.RANKS[Bitboard.getFile(dest)];
 
 		int srcRank = Bitboard.getRank(src), srcFile = Bitboard.getFile(src);
 		int destRank = Bitboard.getRank(dest), destFile = Bitboard.getFile(dest);
 
-		/* Sursa si destinatia se afla pe aceeasi coloana */
 		if (srcFile == destFile) {
 			long file = Bitboard.FILES[srcFile];
 
@@ -128,7 +115,6 @@ public final class Rook extends Piece {
 			}
 		}
 
-		/* Sursa si destinatia sunt pe aceeasi linie */
 		if(srcRank == destRank) {
 			long rank = Bitboard.RANKS[srcRank];
 
@@ -140,9 +126,13 @@ public final class Rook extends Piece {
 		return false;
 	}
 
-	/* 1L poate daca nu merge roxi cica jura ca merge bln */
-	/* pieces = masca turelor */
-	/* La rookRank si rookFile poate fi greseala cu int ala*/
+
+	/**
+	 *	Method which generates an ArrayList of possible moves for
+	 *	the Rook piece. It only generates valid moves.
+	 *	@param pieces only the positions on which the Rooks are on the board.
+	 *	@return an array with all moves possible for the Rook.
+	 */
 	public static ArrayList<long[]> generateMoves(long pieces) {
 		ArrayList<long[]> moves = new ArrayList<long[]>();
 
@@ -153,7 +143,7 @@ public final class Rook extends Piece {
 				src = (src << 1);
 			}
 
-			pieces = (pieces & (~src)); //sterg bitul asta (aka tura asta)
+			pieces = (pieces & (~src));
 
 			int rookRank = Bitboard.getRank(src),
 				rookFile = Bitboard.getFile(src);
@@ -178,3 +168,4 @@ public final class Rook extends Piece {
 		return moves;
 	}
 }
+
