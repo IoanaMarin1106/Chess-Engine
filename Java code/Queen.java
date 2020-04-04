@@ -30,10 +30,20 @@ public final class Queen extends Piece {
 	 * @param piece the position of the Queen.
 	 * @return an array with all moves possible for the Queen.
 	 */
-	public static ArrayList<long[]> generateMoves(long piece) {
-		ArrayList<long[]> moves = Rook.generateMoves(piece);
-		moves.addAll(Bishop.generateMoves(piece));
+	// public static ArrayList<long[]> generateMoves(long piece) {
+	// 	ArrayList<long[]> moves = Rook.generateMoves(piece);
+	// 	moves.addAll(Bishop.generateMoves(piece));
 
+	// 	return moves;
+	// }
+
+	public static ArrayList<long[]> generateMoves(
+		Piece.Type type, Piece.Color color, Bitboard board
+		) {
+
+		ArrayList<long[]> moves = Rook.generateMoves(type, color, board);
+		moves.addAll(Bishop.generateMoves(type, color, board));
+		
 		return moves;
 	}
 }
