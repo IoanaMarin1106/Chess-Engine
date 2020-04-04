@@ -19,14 +19,14 @@ public final class Knight extends Piece {
 	 * @return true for valid move, false otherwise.
 	 */
 	public static boolean isValidMove(long src, long dest) {
-		if ((src & Bitboard.FILES[7]) == 0) {
+		if ((src & Bitboard.FILES[0]) == 0) {
 			if ((src << 17) == dest && (src & Bitboard.RANKS[6]) == 0 && (src & Bitboard.RANKS[7]) == 0)
 				return true;
 			if ((src >>> 15) == dest && (src & Bitboard.RANKS[0]) == 0 && (src & Bitboard.RANKS[1]) == 0)
 				return true;
 		}
 
-		if ((src & Bitboard.FILES[0]) == 0) {
+		if ((src & Bitboard.FILES[7]) == 0) {
 			if ((src << 15) == dest && (src & Bitboard.RANKS[6]) == 0 && (src & Bitboard.RANKS[7]) == 0)
 				return true;
 			if ((src >>> 17) == dest && (src & Bitboard.RANKS[0]) == 0 && (src & Bitboard.RANKS[1]) == 0)
