@@ -90,10 +90,10 @@ public final class Knight extends Piece {
 		long src, pieces, attackerPieces;
 
 		if (color == Piece.Color.WHITE) {
-			pieces= board.whitePieces[5];
+			pieces= board.whitePieces[4];
 			attackerPieces = board.getAllPieces(board.whitePieces);
 		} else {
-			pieces= board.blackPieces[5];
+			pieces= board.blackPieces[4];
 			attackerPieces = board.getAllPieces(board.blackPieces);
 		}
 
