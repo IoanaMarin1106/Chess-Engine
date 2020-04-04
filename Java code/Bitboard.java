@@ -79,6 +79,9 @@ public class Bitboard {
 	 */
 	protected long[] blackPieces = new long[6];
 
+	protected int[] remainingWhitePieces = {1, 1, 2, 2, 2, 8};
+	protected int[] remainingBlackPieces = {1, 1, 2, 2, 2, 8};
+
 
 	/**
 	 * Default constructor for a Bitboard, which resets the board's
@@ -238,11 +241,17 @@ public class Bitboard {
 	 * @param defender the array of the pieces of the color that is on defence.
 	 * @param pos the position that has to be set.
 	 */
-	public void setPosition(long[] attacker, int index, long[] defender, long pos) {
+	public void setPosition(Piece.Color color, long[] attacker, int index, long[] defender, long pos) {
 		attacker[index] = attacker[index] | pos;
 
 		for(int i = 0; i < defender.length; i++) {
 			if((defender[i] & pos) != 0) {
+				if(color == Piece.Color.WHITE) {
+					remainingBlackPieces[i]--;
+				} else {
+					remainingWhitePieces[i]--;
+				}
+				
 				unsetPosition(defender, i, pos);
 			}
 		}
@@ -260,7 +269,7 @@ public class Bitboard {
 
 		Piece.Type type = getPieceTypeAtPosition(move[0], color);
 		unsetPosition(srcPieces, type.getIndex(), move[0]);
-		setPosition(srcPieces, type.getIndex(), destPieces, move[1]);
+		setPosition(color, srcPieces, type.getIndex(), destPieces, move[1]);
 	}
 
 	/**
