@@ -169,7 +169,8 @@ public final class Rook extends Piece {
 
 	public static ArrayList<long[]> generateMoves(Type type,
 												Color color,
-												Bitboard board
+												Bitboard board,
+												boolean isQueen
 												) {
 
 		ArrayList<long[]> moves = new ArrayList<long[]>();
@@ -177,11 +178,11 @@ public final class Rook extends Piece {
         long defenderPieces;
 
 		if(color == Piece.Color.WHITE) {
-            pieces = board.whitePieces[2];
+			pieces = board.whitePieces[isQueen ? 1 : 2];
             attackerPieces = board.getAllPieces(board.whitePieces);
             defenderPieces = board.getAllPieces(board.blackPieces);
         } else {
-            pieces = board.blackPieces[2];
+        	pieces = board.blackPieces[isQueen ? 1 : 2];
             attackerPieces = board.getAllPieces(board.blackPieces);
             defenderPieces = board.getAllPieces(board.whitePieces);
         }
@@ -201,7 +202,7 @@ public final class Rook extends Piece {
 				rookFile = Bitboard.getFile(src);
 
 			for (int i = 1; i <= rookRank; i++) {
-				if (((src >>> (8 * i)) & attackerPieces) != 0) {
+				if (((src >>> (8 * i)) & attackerPieces) == 0) {
 
 					if (isValidMove(new long[] {src, (src >>> (8 * i))}, allPieces)) {
 						moves.add(new long[] {src, (src >>> (8 * i))});
@@ -210,7 +211,7 @@ public final class Rook extends Piece {
 			}
 
 			for (int i = 1; i <= (7 - rookRank); i++) {
-				if (((src << (8 * i)) & attackerPieces) != 0) {
+				if (((src << (8 * i)) & attackerPieces) == 0) {
 
 					if (isValidMove(new long[] {src, (src << (8 * i))}, allPieces)) {
 						moves.add(new long[] {src, (src << (8 * i))});
@@ -220,7 +221,7 @@ public final class Rook extends Piece {
 
 
 			for (int i = 1; i <= rookFile; i++) {
-				if (((src >>> i) & attackerPieces) != 0) {
+				if (((src >>> i) & attackerPieces) == 0) {
 
 					if (isValidMove(new long[] {src, (src >>> i)}, allPieces)) {
 						moves.add(new long[] {src, (src >>> i)});
@@ -229,7 +230,7 @@ public final class Rook extends Piece {
 			}
 
 			for (int i = 1; i <= (7 - rookFile); i++) {
-				if (((src << i) & attackerPieces) != 0) {
+				if (((src << i) & attackerPieces) == 0) {
 				
 					if (isValidMove(new long[] {src, (src << i)}, allPieces)) {
 						moves.add(new long[] {src, (src << i)});
@@ -241,4 +242,3 @@ public final class Rook extends Piece {
 		return moves;
 	}
 }
-
