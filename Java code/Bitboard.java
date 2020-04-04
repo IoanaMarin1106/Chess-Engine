@@ -71,13 +71,13 @@ public class Bitboard {
 	 * Array for the current positions of the white pieces on the board,
 	 * where the order of the pieces is the same as for WHITE_RESET.
 	 */
-	private long[] whitePieces = new long[6];
+	protected long[] whitePieces = new long[6];
 
 	/**
 	 * Array for the current positions of the black pieces on the board,
 	 * where the order of the pieces is the same as for BLACK_RESET.
 	 */
-	private long[] blackPieces = new long[6];
+	protected long[] blackPieces = new long[6];
 
 
 	/**
@@ -170,37 +170,37 @@ public class Bitboard {
 	 * @param color the color that is on move.
 	 * @return true if it's valid/false if invalid.
 	 */
-	public boolean isValidMove(long[] move, Piece.Color color) {
-		/* Move cannot be null or have a length different to 2.
-		 * Also the initial position and the destination of the move
-		 * cannot be the same.
-		 */
-		if(move == null || move.length != 2 || move[0] == move[1]) {
-			return false;
-		}
+	// public boolean isValidMove(long[] move, Piece.Color color) {
+	// 	/* Move cannot be null or have a length different to 2.
+	// 	 * Also the initial position and the destination of the move
+	// 	 * cannot be the same.
+	// 	 */
+	// 	if(move == null || move.length != 2 || move[0] == move[1]) {
+	// 		return false;
+	// 	}
 
-		long color1Pieces, color2Pieces;
-		color1Pieces = getAllPieces((color == Piece.Color.WHITE) ? whitePieces : blackPieces);
-		color2Pieces = getAllPieces((color == Piece.Color.WHITE) ? blackPieces : whitePieces);
+	// 	long color1Pieces, color2Pieces;
+	// 	color1Pieces = getAllPieces((color == Piece.Color.WHITE) ? whitePieces : blackPieces);
+	// 	color2Pieces = getAllPieces((color == Piece.Color.WHITE) ? blackPieces : whitePieces);
 
-		/**
-		 * The move has to start on a piece of the color that is on move.
-		 */
-		if((move[0] & color1Pieces) == 0 || (move[0] & color2Pieces) != 0) {
-			return false;
-		}
+	// 	/**
+	// 	 * The move has to start on a piece of the color that is on move.
+	// 	 */
+	// 	if((move[0] & color1Pieces) == 0 || (move[0] & color2Pieces) != 0) {
+	// 		return false;
+	// 	}
 
-		/**
-		 * The move cannot end on a piece of the same color that is on move.
-		 */
-		if((move[1] & color1Pieces) != 0) {
-			return false;
-		}
+	// 	/**
+	// 	 * The move cannot end on a piece of the same color that is on move.
+	// 	 */
+	// 	if((move[1] & color1Pieces) != 0) {
+	// 		return false;
+	// 	}
 
-		Piece.Type type = getPieceTypeAtPosition(move[0], color);
+	// 	Piece.Type type = getPieceTypeAtPosition(move[0], color);
 
-		return Piece.isValidMove(type, color, move, color1Pieces, color2Pieces);
-	}
+	// 	return Piece.isValidMove(type, color, move, color1Pieces, color2Pieces);
+	// }
 
 	/**
 	 * Method that unsets the bit at a position for a piece, meaning that
@@ -261,13 +261,7 @@ public class Bitboard {
 		 * The order of the pieces is: Pawn, Knight, Bishop, Rook, Queen, King.
 		 */
 		for(int i = 5; i >= 0; i--) {
-			moves = Piece.generateMoves(Piece.getType(i), movingPieces[i]);
-
-			for(long[] move : moves) {
-				if(isValidMove(move, color)) {
-					return move;
-				}
-			}
+			moves.addAll(Piece.generateMoves(Piece.getType(i), color, this));
 		}
 
 		return null;
@@ -287,10 +281,10 @@ public class Bitboard {
 		ArrayList<long[]> moves;
 
 		for(int i = 5; i >= 0; i--) {
-			moves = Piece.generateMoves(Piece.getType(i), attacker[i]);
+			moves = Piece.generateMoves(Piece.getType(i), attackerColor, this);
 
 			for(long[] move : moves) {
-				if(isValidMove(move, attackerColor) && (move[1] == defender[0])) {
+				if(move[1] == defender[0]) {
 					return true;
 				}
 			}
