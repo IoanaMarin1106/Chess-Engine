@@ -255,7 +255,7 @@ public class Bitboard {
 	public long[] generateMove(Piece.Color color) {
 		long[] movingPieces = (color == Piece.Color.WHITE) ? whitePieces : blackPieces;
 
-		ArrayList<long[]> moves;
+		ArrayList<long[]> moves = new ArrayList<long[]>();
 
 		/* Goes through each piece and tries to find a valid move.
 		 * The order of the pieces is: Pawn, Knight, Bishop, Rook, Queen, King.
