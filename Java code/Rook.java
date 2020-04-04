@@ -132,38 +132,112 @@ public final class Rook extends Piece {
 	 * @param pieces only the positions on which the Rooks are on the board.
 	 * @return an array with all moves possible for the Rook.
 	 */
-	public static ArrayList<long[]> generateMoves(long pieces) {
-		ArrayList<long[]> moves = new ArrayList<long[]>();
+	// public static ArrayList<long[]> generateMoves(long pieces) {
+	// 	ArrayList<long[]> moves = new ArrayList<long[]>();
 
-		while(pieces != 0) {
-			long src = 1;
+	// 	while(pieces != 0) {
+	// 		long src = 1;
 
-			while((src & pieces) == 0) {
-				src = (src << 1);
-			}
+	// 		while((src & pieces) == 0) {
+	// 			src = (src << 1);
+	// 		}
 
-			pieces = (pieces & (~src));
+	// 		pieces = (pieces & (~src));
+
+	// 		int rookRank = Bitboard.getRank(src),
+	// 			rookFile = Bitboard.getFile(src);
+
+	// 		for(int i = 1; i <= rookRank; i++) {
+	// 			moves.add(new long[] {src, (src >>> (8 * i))});
+	// 		}
+
+	// 		for (int i = 1; i <= (7 - rookRank); i++) {
+	// 			moves.add(new long[] {src, (src << (8 * i))});
+	// 		}
+
+	// 		for (int i = 1; i <= rookFile; i++) {
+	// 			moves.add(new long[] {src, (src >>> i)});
+	// 		}
+
+	// 		for (int i = 1; i <= (7 - rookFile); i++) {
+	// 			moves.add(new long[] {src, (src << i)});
+	// 		}
+	// 	}
+
+	// 	return moves;
+	// }
+
+	public static ArrayList<long[]> generateMoves(Type type,
+												Color color,
+												Bitboard board
+												) {
+
+		ArrayList<long[]> moves = new ArrrayList<long[]>();
+		long pieces, attackerPieces;
+        long defenderPieces;
+
+		if(color == Piece.Color.WHITE) {
+            pieces = board.whitePieces[2];
+            attackerPieces = board.getAllPieces(board.whitePieces);
+            defenderPieces = board.getAllPieces(board.blackPieces);
+        } else {
+            pieces = board.blackPieces[2];
+            attackerPieces = board.getAllPieces(board.blackPieces);
+            defenderPieces = board.getAllPieces(board.whitePieces);
+        }
+
+        long allPieces = defenderPieces | attackerPieces;
+
+        while (pieces != 0) {
+        	long src = 1;
+
+        	while ((src & pieces) == 0) {
+        		src = (src << 1);
+        	}
+
+        	pieces = (pieces & (~src));
 
 			int rookRank = Bitboard.getRank(src),
 				rookFile = Bitboard.getFile(src);
 
-			for(int i = 1; i <= rookRank; i++) {
-				moves.add(new long[] {src, (src >>> (8 * i))});
+			for (int i = 1; i <= rookRank; i++) {
+				if (((src >>> (8 * i)) & attackerPieces) != 0) {
+
+					if (isValidMove(new long[] {src, (src >>> (8 * i))}, allPieces)) {
+						moves.add(new long[] {src, (src >>> (8 * i))});
+					}
+				}
 			}
 
 			for (int i = 1; i <= (7 - rookRank); i++) {
-				moves.add(new long[] {src, (src << (8 * i))});
+				if (((src << (8 * i)) & attackerPieces) != 0) {
+
+					if (isValidMove(new long[] {src, (src << (8 * i))}, allPieces)) {
+						moves.add(new long[] {src, (src << (8 * i))});
+					}
+				}
 			}
 
+
 			for (int i = 1; i <= rookFile; i++) {
-				moves.add(new long[] {src, (src >>> i)});
+				if (((src >>> i) & attackerPieces) != 0) {
+
+					if (isValidMove(new long[] {src, (src >>> i)}, allPieces)) {
+						moves.add(new long[] {src, (src >>> i)});
+					}
+				}
 			}
 
 			for (int i = 1; i <= (7 - rookFile); i++) {
-				moves.add(new long[] {src, (src << i)});
+				if (((src << i) & attackerPieces) != 0) {
+				
+					if (isValidMove(new long[] {src, (src << i)}, allPieces)) {
+						moves.add(new long[] {src, (src << i)});
+					}
+				}
 			}
-		}
-
+        }
+        
 		return moves;
 	}
 }
