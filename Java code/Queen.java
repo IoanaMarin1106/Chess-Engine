@@ -19,9 +19,9 @@ public final class Queen extends Piece {
 	 * @param allPieces the current state of the board.
 	 * @return true for valid move, false otherwise.
 	 */
-	public static boolean isValidMove(long[] move, long allPieces) {
-		return (Rook.isValidMove(move, allPieces) || Bishop.isValidMove(move, allPieces));
-	}
+	// public static boolean isValidMove(long[] move, long allPieces) {
+	// 	return (Rook.isValidMove(move, allPieces) || Bishop.isValidMove(move, allPieces));
+	// }
 
 	/**
 	 * Methods which generates an ArrayList of possible moves
@@ -41,8 +41,8 @@ public final class Queen extends Piece {
 		Piece.Type type, Piece.Color color, Bitboard board
 		) {
 
-		ArrayList<long[]> moves = Rook.generateMoves(type, color, board);
-		moves.addAll(Bishop.generateMoves(type, color, board));
+		ArrayList<long[]> moves = Rook.generateMoves(type, color, board, true);
+		moves.addAll(Bishop.generateMoves(type, color, board, true));
 		
 		return moves;
 	}
