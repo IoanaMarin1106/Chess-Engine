@@ -172,7 +172,7 @@ public final class Rook extends Piece {
 												Bitboard board
 												) {
 
-		ArrayList<long[]> moves = new ArrrayList<long[]>();
+		ArrayList<long[]> moves = new ArrayList<long[]>();
 		long pieces, attackerPieces;
         long defenderPieces;
 
@@ -237,7 +237,7 @@ public final class Rook extends Piece {
 				}
 			}
         }
-        
+
 		return moves;
 	}
 }
