@@ -98,7 +98,7 @@ public final class Bishop extends Piece {
 		Piece.Type type, Piece.Color color, Bitboard board
 		) {
 
-		ArrayList<long[]> moves = new ArrayList<long[]>;
+		ArrayList<long[]> moves = new ArrayList<long[]>();
 		long pieces, attackerPieces, allPieces;
 
 		if(color == Piece.Color.WHITE) {
@@ -121,6 +121,8 @@ public final class Bishop extends Piece {
 			pieces = (pieces & (~src));
 
 			long dest;
+
+			int srcRank = Bitboard.getRank(src), srcFile = Bitboard.getFile(src);
 
 			int rank, file;
 
@@ -175,7 +177,7 @@ public final class Bishop extends Piece {
 				if((dest & attackerPieces) == 0 && isValidMove(src, dest, allPieces)) {
 					moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
 				}
-				
+
 				rank++;
 				file++;
 			}
