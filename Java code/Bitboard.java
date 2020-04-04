@@ -264,6 +264,10 @@ public class Bitboard {
 			moves.addAll(Piece.generateMoves(Piece.getType(i), color, this));
 		}
 
+		if(moves.length > 0) {
+			return moves.get(0);
+		}
+		
 		return null;
 	}
 
