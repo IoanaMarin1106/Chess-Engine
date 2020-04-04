@@ -1,27 +1,25 @@
 
 public class Evaluation {
+	
+	public final static int[] pieceValue = {200, 9, 5, 3, 3, 1};
+
 	public static int materialValue(Bitboard board, Piece.Color playerColor) {
-		long playerPieces, vsPieces;
+		int[] playerPieces, vsPieces;
 
 		if(playerColor == Piece.Color.WHITE) {
-			playerPieces = board.getAllPieces(board.whitePieces);
-			vsPieces = board.getAllPieces(board.blackPieces);
+			playerPieces = board.remainingWhitePieces;
+			vsPieces = board.remainingBlackPieces;
 		} else {
-			playerPieces = board.getAllPieces(board.blackPieces);
-			vsPieces = board.getAllPieces(board.whitePieces);
+			playerPieces = board.remainingBlackPieces;
+			vsPieces = board.remainingWhitePieces;
 		}
 
 		int playerScore = 0, vsScore = 0;
 
-		while(playerPieces != 0) {
-			playerScore += ((playerPieces & 1) != 0) ? 1 : 0;
-			playerPieces = (playerPieces >>> 1);
-		}
-
-		while(vsPieces != 0) {
-			vsScore += ((vsPieces & 1) != 0) ? 1 : 0;
-			vsPieces = (vsPieces >>> 1);
-		}
+		for(int i = 0; i < 6; i++) {
+			playerScore += (pieceValue[i] * playerPieces[i]);
+			vsScore += (pieceValue[i] * vsPieces[i]);
+		}		
 
 		return (playerScore - vsScore);
 	}
