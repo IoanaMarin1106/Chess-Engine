@@ -63,7 +63,7 @@ public final class King extends Piece {
 		) {
 
 		ArrayList<long[]> moves = new ArrayList<long[]>();
-		long src, pieces;
+		long src, attackerPieces;
 
 		if(color == Piece.Color.WHITE) {
 			src = board.whitePieces[0];
