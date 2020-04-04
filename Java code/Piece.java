@@ -74,35 +74,35 @@ public abstract class Piece {
 	 * @param attackerPieces defender pieces.
 	 * @return true for valid move, false otherwise. 
 	 */
-	public static boolean isValidMove(
-		Type type, Color color,
-		long[] move,
-		long defenderPieces, long attackerPieces
-		) {
+	// public static boolean isValidMove(
+	// 	Type type, Color color,
+	// 	long[] move,
+	// 	long defenderPieces, long attackerPieces
+	// 	) {
 
-		switch(type) {
-			case KING:
-				return King.isValidMove(move);
-			case QUEEN:
-				return Queen.isValidMove(move, (defenderPieces| attackerPieces));
-			case ROOK:
-				return Rook.isValidMove(move, (defenderPieces | attackerPieces));
-			case BISHOP:
-				return Bishop.isValidMove(move, (defenderPieces | attackerPieces));
-			case KNIGHT:
-				return Knight.isValidMove(move);
-			case PAWN:
-				if(color == Piece.Color.WHITE) {
-					return Pawn.isValidWhiteMove(move, attackerPieces,
-											(defenderPieces | attackerPieces));
-				} else {
-					return Pawn.isValidBlackMove(move, attackerPieces,
-											(defenderPieces | attackerPieces));
-				}
-			default:
-				return false;
-		}
-	}
+	// 	switch(type) {
+	// 		case KING:
+	// 			return King.isValidMove(move);
+	// 		case QUEEN:
+	// 			return Queen.isValidMove(move, (defenderPieces| attackerPieces));
+	// 		case ROOK:
+	// 			return Rook.isValidMove(move, (defenderPieces | attackerPieces));
+	// 		case BISHOP:
+	// 			return Bishop.isValidMove(move, (defenderPieces | attackerPieces));
+	// 		case KNIGHT:
+	// 			return Knight.isValidMove(move);
+	// 		case PAWN:
+	// 			if(color == Piece.Color.WHITE) {
+	// 				return Pawn.isValidWhiteMove(move, attackerPieces,
+	// 										(defenderPieces | attackerPieces));
+	// 			} else {
+	// 				return Pawn.isValidBlackMove(move, attackerPieces,
+	// 										(defenderPieces | attackerPieces));
+	// 			}
+	// 		default:
+	// 			return false;
+	// 	}
+	// }
 
 	/**
 	 * Method which generates an ArrayList of possible moves for 
@@ -111,20 +111,43 @@ public abstract class Piece {
 	 * @param pieces only the positions on which this piece is on the board.
 	 * @return an array with all moves possible for the piece.
 	 */
-	public static ArrayList<long[]> generateMoves(Type type, long pieces) {
+	// public static ArrayList<long[]> generateMoves(Type type, long pieces) {
+	// 	switch(type) {
+	// 		case KING:
+	// 			return King.generateMoves(pieces);
+	// 		case QUEEN:
+	// 			return Queen.generateMoves(pieces);
+	// 		case ROOK:
+	// 			return Rook.generateMoves(pieces);
+	// 		case BISHOP:
+	// 			return Bishop.generateMoves(pieces);
+	// 		case KNIGHT:
+	// 			return Knight.generateMoves(pieces);
+	// 		case PAWN:
+	// 			return Pawn.generateMoves(pieces);
+	// 		default:
+	// 			return null;
+	// 	}
+	// }
+
+	public static ArrayList<long[]> generateMoves(
+		Type type, Color color,
+		Bitboard board
+		) {
+
 		switch(type) {
 			case KING:
-				return King.generateMoves(pieces);
+				return King.generateMoves(type, color, board);
 			case QUEEN:
-				return Queen.generateMoves(pieces);
+				return Queen.generateMoves(type, color, board);
 			case ROOK:
-				return Rook.generateMoves(pieces);
+				return Rook.generateMoves(type, color, board, false);
 			case BISHOP:
-				return Bishop.generateMoves(pieces);
+				return Bishop.generateMoves(type, color, board, false);
 			case KNIGHT:
-				return Knight.generateMoves(pieces);
+				return Knight.generateMoves(type, color, board);
 			case PAWN:
-				return Pawn.generateMoves(pieces);
+				return Pawn.generateMoves(type, color, board);
 			default:
 				return null;
 		}
