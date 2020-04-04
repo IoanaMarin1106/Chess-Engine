@@ -133,12 +133,12 @@ public final class Pawn extends Piece {
 		long src, pieces, attackerPieces, defenderPieces, allPieces;
 
 		if (color == Piece.Color.WHITE) {
-			pieces = board.whitePieces[0];
+			pieces = board.whitePieces[5];
 			attackerPieces = board.getAllPieces(board.whitePieces);
 			defenderPieces = board.getAllPieces(board.blackPieces);
 			allPieces = (attackerPieces | defenderPieces);
 		} else {
-			pieces = board.blackPieces[0];
+			pieces = board.blackPieces[5];
 			attackerPieces = board.getAllPieces(board.blackPieces);
 			defenderPieces = board.getAllPieces(board.whitePieces);
 			allPieces = (attackerPieces | defenderPieces);
