@@ -89,6 +89,21 @@ public class Bitboard {
 	}
 
 	/**
+	 *
+	 */
+	@Override
+	public Object clone() {
+		Bitboard ret = new Bitboard();
+
+		for(int i = 0; i < whitePieces.length; i++) {
+			ret.whitePieces[i] = this.whitePieces[i];
+			ret.blackPieces[i] = this.blackPieces[i];
+		}
+
+		return ret;
+	}
+
+	/**
 	 * Method to reset the positions of all pieces on board.
 	 */
 	public void reset() {
@@ -253,8 +268,15 @@ public class Bitboard {
 	 * @param color the color that is on move.
 	 */
 	public long[] generateMove(Piece.Color color) {
-		long[] movingPieces = (color == Piece.Color.WHITE) ? whitePieces : blackPieces;
+		// long[] movingPieces = (color == Piece.Color.WHITE) ? whitePieces : blackPieces;
 
+		return Negamax.negamaxHandler(this, color);
+	}
+
+	/**
+	 * Generates all possible moves. Called from negamax.
+	 */
+	public ArrayList<long[]> generateAllMoves(Piece.Color color) {
 		ArrayList<long[]> moves = new ArrayList<long[]>();
 
 		/* Goes through each piece and tries to find a valid move.
@@ -264,11 +286,7 @@ public class Bitboard {
 			moves.addAll(Piece.generateMoves(Piece.getType(i), color, this));
 		}
 
-		if(moves.size() > 0) {
-			return moves.get(0);
-		}
-
-		return null;
+		return moves;
 	}
 
 	/**
@@ -295,6 +313,10 @@ public class Bitboard {
 		}
 
 		return false;
+	}
+
+	public boolean gameOver() {
+		return (whitePieces[0] == 0 || blackPieces[0] == 0);
 	}
 	
 	/** ------------------ FOR CORRECT DEBUGGING ---------------
