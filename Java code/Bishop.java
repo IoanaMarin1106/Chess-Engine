@@ -95,18 +95,18 @@ public final class Bishop extends Piece {
 	}
 
 	public static ArrayList<long[]> generateMoves(
-		Piece.Type type, Piece.Color color, Bitboard board
+		Piece.Type type, Piece.Color color, Bitboard board, boolean isQueen
 		) {
 
 		ArrayList<long[]> moves = new ArrayList<long[]>();
 		long pieces, attackerPieces, allPieces;
 
 		if(color == Piece.Color.WHITE) {
-			pieces = board.whitePieces[0];
+			pieces = board.whitePieces[isQueen ? 1 : 3];
 			attackerPieces = board.getAllPieces(board.whitePieces);
 			allPieces = (attackerPieces | board.getAllPieces(board.blackPieces));
 		} else {
-			pieces = board.blackPieces[0];
+			pieces = board.blackPieces[isQueen ? 1 : 3];
 			attackerPieces = board.getAllPieces(board.blackPieces);
 			allPieces = (attackerPieces | board.getAllPieces(board.whitePieces));
 		}
