@@ -62,7 +62,7 @@ public final class King extends Piece {
 		Piece.Type type, Piece.Color color, Bitboard board
 		) {
 
-		ArrayList<long[]> moves = new ArrayList<long[]>;
+		ArrayList<long[]> moves = new ArrayList<long[]>();
 		long src, pieces;
 
 		if(color == Piece.Color.WHITE) {
