@@ -19,9 +19,9 @@ public class Negamax {
 
 			newState.makeMove(move, playerColor);
 
-			if(newState.isCheck(playerColor)) {
-				continue;
-			}
+			// if(newState.isCheck(playerColor)) {
+			// 	continue;
+			// }
 
 			int score = -negamax(newState, vsColor, -beta, -alpha, depth - 1);
 
@@ -49,9 +49,9 @@ public class Negamax {
 			Bitboard newState = (Bitboard)board.clone();
 			newState.makeMove(move, playerColor);
 
-			if(newState.isCheck(playerColor)) {
-				continue;
-			}
+			// if(newState.isCheck(playerColor)) {
+			// 	continue;
+			// }
 
 			int score = -negamax(newState, vsColor, -beta, -alpha, 5);
 
