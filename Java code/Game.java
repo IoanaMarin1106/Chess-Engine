@@ -197,17 +197,9 @@ public class Game {
 		}
 
 		Debug.displayBoard(this);
-
-		System.out.println("# ajunge sa verif sahu");
-		if(board.isCheck(myColor)) {
-			System.out.println("# e in sah");
-		}
 		
 		if(isPlaying) {
 			makeMove();
-			if(board.isCheck(myColor)) {
-			System.out.println("# e in sah");
-		}
 		} else {
 			switchTurnColor();
 		}
