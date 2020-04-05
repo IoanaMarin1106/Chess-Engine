@@ -53,7 +53,7 @@ public class Negamax {
 				continue;
 			}
 
-			int score = -negamax(newState, vsColor, -beta, -alpha, 6);
+			int score = -negamax(newState, vsColor, -beta, -alpha, 5);
 
 			if(score >= alpha) {
 				alpha = score;
