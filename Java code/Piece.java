@@ -64,71 +64,24 @@ public abstract class Piece {
 		return null;
 	}
 
-	/**
-	 * Method which checks if a move is valid for a piece 
-	 * depending on its type and color.
-	 * @param type piece type.
-	 * @param color piece color.
-	 * @param move the move to be checked.
-	 * @param defenderPieces attacker pieces.
-	 * @param attackerPieces defender pieces.
-	 * @return true for valid move, false otherwise. 
-	 */
-	// public static boolean isValidMove(
-	// 	Type type, Color color,
-	// 	long[] move,
-	// 	long defenderPieces, long attackerPieces
-	// 	) {
-
-	// 	switch(type) {
-	// 		case KING:
-	// 			return King.isValidMove(move);
-	// 		case QUEEN:
-	// 			return Queen.isValidMove(move, (defenderPieces| attackerPieces));
-	// 		case ROOK:
-	// 			return Rook.isValidMove(move, (defenderPieces | attackerPieces));
-	// 		case BISHOP:
-	// 			return Bishop.isValidMove(move, (defenderPieces | attackerPieces));
-	// 		case KNIGHT:
-	// 			return Knight.isValidMove(move);
-	// 		case PAWN:
-	// 			if(color == Piece.Color.WHITE) {
-	// 				return Pawn.isValidWhiteMove(move, attackerPieces,
-	// 										(defenderPieces | attackerPieces));
-	// 			} else {
-	// 				return Pawn.isValidBlackMove(move, attackerPieces,
-	// 										(defenderPieces | attackerPieces));
-	// 			}
-	// 		default:
-	// 			return false;
-	// 	}
-	// }
-
-	/**
-	 * Method which generates an ArrayList of possible moves for 
-	 * a piece depending on its type.
-	 * @param type piece type.
-	 * @param pieces only the positions on which this piece is on the board.
-	 * @return an array with all moves possible for the piece.
-	 */
-	// public static ArrayList<long[]> generateMoves(Type type, long pieces) {
-	// 	switch(type) {
-	// 		case KING:
-	// 			return King.generateMoves(pieces);
-	// 		case QUEEN:
-	// 			return Queen.generateMoves(pieces);
-	// 		case ROOK:
-	// 			return Rook.generateMoves(pieces);
-	// 		case BISHOP:
-	// 			return Bishop.generateMoves(pieces);
-	// 		case KNIGHT:
-	// 			return Knight.generateMoves(pieces);
-	// 		case PAWN:
-	// 			return Pawn.generateMoves(pieces);
-	// 		default:
-	// 			return null;
-	// 	}
-	// }
+	public static int getTypeIndex(char type) {
+		switch(type) {
+			case 'k':
+				return 0;
+			case 'q':
+				return 1;
+			case 'r':
+				return 2;
+			case 'b':
+				return 3;
+			case 'n':
+				return 4;
+			case 'p':
+				return 5;
+			default:
+				return 1;
+		}
+	}
 
 	public static ArrayList<long[]> generateMoves(
 		Type type, Color color,
