@@ -56,6 +56,18 @@ public final class Move {
 		return true;
 	}
 
+	public static boolean isCastling(String move) {
+		if(move.equals("e1g1") || move.equals("e1c1")) {
+			return true;
+		}
+
+		if(move.equals("e8g8") || move.equals("e8c8")) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Method which converts a string to a move. The string
 	 * is converted into a array of two long elements, first one
