@@ -19,8 +19,8 @@ public final class King extends Piece {
 	 * @return true for valid move, false otherwise.
 	 */
 	public static boolean isValidMove(long src, long dest) {		
-		if(src << 1 == dest && (src & Bitboard.FILES[7]) == 0) return true;
-		if(src >>> 1 == dest && (src & Bitboard.FILES[0]) == 0) return true;
+		if(src << 1 == dest && (src & Bitboard.FILES[0]) == 0) return true;
+		if(src >>> 1 == dest && (src & Bitboard.FILES[7]) == 0) return true;
 
 		if((src & Bitboard.RANKS[0]) == 0) {
 			if(src >>> 9 == dest && (src & Bitboard.FILES[7]) == 0) return true;
@@ -36,27 +36,6 @@ public final class King extends Piece {
 		
 		return false;
 	}
-	
-	/**
-	 * Methods which generates an ArrayList of possible moves
-	 * for the King piece. It only generates valid moves.
-	 * @param src the source of the move.
-	 * @return an array with all moves possible for the King.
-	 */
-	// public static ArrayList<long[]> generateMoves(long src) {
-	// 	ArrayList<long[]> moves = new ArrayList<long[]>();
-		
-	// 	moves.add(new long[] {src, (src << 9)});
-	// 	moves.add(new long[] {src, (src << 8)});
-	// 	moves.add(new long[] {src, (src << 7)});
-	// 	moves.add(new long[] {src, (src >>> 9)});
-	// 	moves.add(new long[] {src, (src >>> 8)});
-	// 	moves.add(new long[] {src, (src >>> 7)});
-	// 	moves.add(new long[] {src, (src << 1)});
-	// 	moves.add(new long[] {src, (src >>> 1)});
-		
-	// 	return moves;
-	// }
 
 	public static ArrayList<long[]> generateMoves(
 		Piece.Type type, Piece.Color color, Bitboard board
