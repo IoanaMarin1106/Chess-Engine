@@ -71,7 +71,7 @@ public class Game {
 	 * The features include setting off sigint.
 	 */
 	public void setupFeatures() {
-		sendToXboard("feature sigint=0 myname=\"Cerebellum\" done=1\n");
+		sendToXboard("feature sigint=0 san=0 myname=\"Cerebellum\" done=1\n");
 	}
 
 	/**
@@ -84,15 +84,10 @@ public class Game {
 	public void makeMove() {
 		long[] myMove = board.generateMove(myColor);
 
-		if(myMove == null ) {
+		if(myMove == null) {
 			sendToXboard("resign\n");
 		} else {
 			board.makeMove(myMove, myColor);
-
-			if(board.isCheck(myColor)) {
-				sendToXboard("resign\n");
-				return;
-			}
 
 			String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
 			sendToXboard(convertedMove);
@@ -192,16 +187,27 @@ public class Game {
 	public void moveCommand(String word) {
 		long[] move = Move.convertMove(word);
 
-		board.makeMove(move, turnColor);
+		if(Move.isCastling(word)) {
+			board.makeCastling(move, turnColor);
+		} else {
+			board.makeMove(move, turnColor);
+			if(word.length() == 5) {
+				board.pawnPromotion(move[1], turnColor, word.charAt(4));	
+			}
+		}
+
 		Debug.displayBoard(this);
 
+		System.out.println("# ajunge sa verif sahu");
 		if(board.isCheck(myColor)) {
-			sendToXboard("resign\n");
-			return;
+			System.out.println("# e in sah");
 		}
 		
 		if(isPlaying) {
 			makeMove();
+			if(board.isCheck(myColor)) {
+			System.out.println("# e in sah");
+		}
 		} else {
 			switchTurnColor();
 		}
