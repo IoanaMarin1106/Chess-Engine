@@ -117,12 +117,12 @@ public class Evaluation {
 		for(int i = 0; i < tableValue.length; i++) {
 			for(int rank = 0; rank < Bitboard.RANKS.length; rank++) {
 				for(int file = 0; file < Bitboard.FILES.length; file++) {
-					if((playerPieces[i] & Bitboard.RANKS[i] & Bitboard.FILES[i]) != 0) {
+					if((playerPieces[i] & Bitboard.RANKS[rank] & Bitboard.FILES[file]) != 0) {
 						int aux = (playerColor == Piece.Color.WHITE) ? (7-rank) : rank;
 						playerScore += tableValue[i][aux][file];
 					}
 
-					if((vsPieces[i] & Bitboard.RANKS[i] & Bitboard.FILES[i]) != 0) {
+					if((vsPieces[i] & Bitboard.RANKS[rank] & Bitboard.FILES[file]) != 0) {
 						int aux = (playerColor == Piece.Color.WHITE) ? rank : (7-rank);
 						vsScore += tableValue[i][aux][file];
 					}					
@@ -133,12 +133,53 @@ public class Evaluation {
 		return (playerScore - vsScore);
 	}
 
+	public static int pawnRankValue(Bitboard board, Piece.Color playerColor) {
+		int playerScore = 0, vsScore = 0;
+
+		long playerPawns, vsPawns;
+
+		if(playerColor == Piece.Color.WHITE) {
+			playerPawns = board.whitePieces[5];
+			vsPawns = board.blackPieces[5];
+		} else {
+			playerPawns = board.blackPieces[5];
+			vsPawns = board.whitePieces[5];
+		}
+
+		for(int i = 0; i < Bitboard.RANKS.length; i++) {
+			if((playerPawns & Bitboard.RANKS[i]) != 0) {
+				for(int j = 0; j < Bitboard.FILES.length; j++) {
+					if((playerPawns & Bitboard.RANKS[i] & Bitboard.FILES[j]) != 0) {
+						playerScore += (playerColor == Piece.Color.WHITE) ? i : (7 - i);
+					}
+				}
+			}
+
+			if((vsPawns & Bitboard.RANKS[i]) != 0) {
+				for(int j = 0; j < Bitboard.FILES.length; j++) {
+					if((vsPawns & Bitboard.RANKS[i] & Bitboard.FILES[j]) != 0) {
+						vsScore += (playerColor == Piece.Color.WHITE) ? (7 - i) : i;
+					}
+				}
+			}
+		}
+
+		return (playerScore - vsScore);
+	}
+
+	public static int mobilityValue(Bitboard board, Piece.Color playerColor) {
+		Piece.Color vsColor = (playerColor == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
+		return (board.generateAllMoves(playerColor).size() - board.generateAllMoves(vsColor).size());
+		
+	}
 
 	public static int evaluate(Bitboard board, Piece.Color playerColor) {
 		if(board.gameOver()) {
 			return ((board.winner(playerColor)) ? Integer.MAX_VALUE : Integer.MIN_VALUE);
 		}
 
-		return materialValue(board, playerColor) * 10 + tableValue(board, playerColor);
+		//System.out.println("# TABLE VALUE E = " + tableValue(board, playerColor));
+		return materialValue(board, playerColor) * 130 + 13 * mobilityValue(board, playerColor) + 
+			30 * pawnRankValue(board, playerColor) + 1 * tableValue(board, playerColor);
 	}
 }
