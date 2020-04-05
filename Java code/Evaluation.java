@@ -135,6 +135,10 @@ public class Evaluation {
 
 
 	public static int evaluate(Bitboard board, Piece.Color playerColor) {
-		return materialValue(board, playerColor) * 100 + tableValue(board, playerColor);
+		if(board.gameOver()) {
+			return ((board.winner(playerColor)) ? Integer.MAX_VALUE : Integer.MIN_VALUE);
+		}
+
+		return materialValue(board, playerColor) * 10 + tableValue(board, playerColor);
 	}
 }
