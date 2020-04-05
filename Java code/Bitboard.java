@@ -82,6 +82,9 @@ public class Bitboard {
 	protected int[] remainingWhitePieces = {1, 1, 2, 2, 2, 8};
 	protected int[] remainingBlackPieces = {1, 1, 2, 2, 2, 8};
 
+	private long[] lastWhiteMove = null;
+	private long[] lastBlackMove = null;
+
 	/**
 	 * Default constructor for a Bitboard, which resets the board's
 	 * initial positions.
@@ -100,6 +103,8 @@ public class Bitboard {
 		for(int i = 0; i < whitePieces.length; i++) {
 			ret.whitePieces[i] = this.whitePieces[i];
 			ret.blackPieces[i] = this.blackPieces[i];
+			ret.remainingWhitePieces[i] = this.remainingWhitePieces[i];
+			ret.remainingBlackPieces[i] = this.remainingBlackPieces[i];
 		}
 
 		return ret;
@@ -233,32 +238,38 @@ public class Bitboard {
 		if(type == Piece.Type.PAWN) {
 			enPassant(move, color, type);
 		}
+
+		if(color == Piece.Color.WHITE) {
+			lastWhiteMove = move;
+		} else {
+			lastBlackMove = move;
+		}
 	}
 
 	/**
 	 *
 	 */
 	public void enPassant(long[] move, Piece.Color color, Piece.Type type) {
-		if(color == Piece.Color.WHITE) {
+		if(color == Piece.Color.WHITE && lastBlackMove != null && (move[0] & RANKS[4]) != 0) {
 			if(move[1] == (move[0] << 9)) {
-				if((blackPieces[5] & (move[0] << 1)) != 0) {
+				if((blackPieces[5] & (move[0] << 1)) != 0 && (move[0] << 1) == lastBlackMove[1]) {
 					blackPieces[5] = blackPieces[5] & (~(move[0] << 1));
 					remainingBlackPieces[5]--;
 				}
 			} else if(move[1] == (move[0] << 7)) {
-				if((blackPieces[5] & (move[0] >>> 1)) != 0) {
+				if((blackPieces[5] & (move[0] >>> 1)) != 0 && (move[0] >>> 1) == lastBlackMove[1]) {
 					blackPieces[5] = blackPieces[5] & (~(move[0] >>> 1));
 					remainingBlackPieces[5]--;
 				}
 			}
-		} else {
+		} else if(lastWhiteMove != null && (move[0] & RANKS[3]) != 0) {
 			if(move[1] == (move[0] >>> 9)) {
-				if((whitePieces[5] & (move[0] >>> 1)) != 0) {
+				if((whitePieces[5] & (move[0] >>> 1)) != 0 && (move[0] >>> 1) == lastWhiteMove[1]) {
 					whitePieces[5] = whitePieces[5] & (~(move[0] >>> 1));
 					remainingWhitePieces[5]--;
 				}
 			} else if(move[1] == (move[0] >>> 7)) {
-				if((whitePieces[5] & (move[0] << 1)) != 0) {
+				if((whitePieces[5] & (move[0] << 1)) != 0 && (move[0] << 1) == lastWhiteMove[1]) {
 					whitePieces[5] = whitePieces[5] & (~(move[0] << 1));
 					remainingWhitePieces[5]--;
 				}
