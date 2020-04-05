@@ -201,6 +201,15 @@ public final class Rook extends Piece {
 			int rookRank = Bitboard.getRank(src),
 				rookFile = Bitboard.getFile(src);
 
+			/* 
+				c6 => rookRank = 5, rookFile = 5
+			*/
+
+			/*
+				i=1,5
+				c5, c4, c3, c2, c1
+			*/
+
 			for (int i = 1; i <= rookRank; i++) {
 				if (((src >>> (8 * i)) & attackerPieces) == 0) {
 
@@ -209,6 +218,11 @@ public final class Rook extends Piece {
 					}
 				}
 			}
+
+			/*
+				i=1,2
+				c7, c8
+			*/
 
 			for (int i = 1; i <= (7 - rookRank); i++) {
 				if (((src << (8 * i)) & attackerPieces) == 0) {
@@ -219,21 +233,32 @@ public final class Rook extends Piece {
 				}
 			}
 
+			/*
+				i = 1,5
+				d6,e6,f6,g6,h6
+			*/
+
 
 			for (int i = 1; i <= rookFile; i++) {
-				if (((src >>> i) & attackerPieces) == 0) {
+				if (((src << i) & attackerPieces) == 0) {
 
-					if (isValidMove(new long[] {src, (src >>> i)}, allPieces)) {
-						moves.add(new long[] {src, (src >>> i)});
+					if (isValidMove(new long[] {src, (src << i)}, allPieces)) {
+						moves.add(new long[] {src, (src << i)});
 					}
 				}
 			}
 
+			/*
+				i = 1,2
+				b6,a6
+
+			*/
+
 			for (int i = 1; i <= (7 - rookFile); i++) {
-				if (((src << i) & attackerPieces) == 0) {
+				if (((src >>> i) & attackerPieces) == 0) {
 				
-					if (isValidMove(new long[] {src, (src << i)}, allPieces)) {
-						moves.add(new long[] {src, (src << i)});
+					if (isValidMove(new long[] {src, (src >>> i)}, allPieces)) {
+						moves.add(new long[] {src, (src >>> i)});
 					}
 				}
 			}
