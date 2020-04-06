@@ -50,9 +50,9 @@ public class Negamax {
 		Piece.Color vsColor = (playerColor == Piece.Color.WHITE) ?
 							Piece.Color.BLACK : Piece.Color.WHITE;
 
-		long[] bestMove = null;
-		// int alpha = -10000000, beta = 10000000;
-		int max = -10000000;
+		ArrayList<long[]> bestMoves = new ArrayList<long[]>();
+		int alpha = -10000000, beta = 10000000;
+		int max = -1000000;
 
 		for(long[] move : moves) {
 			Bitboard newState = (Bitboard)board.clone();
@@ -62,16 +62,31 @@ public class Negamax {
 			// 	continue;
 			// }
 
-			int score = -negamax(newState, vsColor, -10000000, 10000000, 2);
+			int score = -negamax(newState, vsColor, -beta, -alpha, 2);
 
-			if(score >= max) {
+			if(score > max) {
 				max = score;
-				bestMove = move;
+				bestMoves.clear();
+				bestMoves.add(move);
+			} else if(score == max) {
+				bestMoves.add(move);
 			}
 
-			// if(max >= alpha) {
-			// 	alpha = score;
-			// }
+			if(max >= alpha) {
+				alpha = score;
+			}
+		}
+
+		long[] bestMove = null;
+		int maxMove = -10000000;
+
+		for(long[] move : bestMoves) {
+			int score = Evaluation.evaluateMove(board, playerColor, move);
+
+			if(score > maxMove) {
+				maxMove = score;
+				bestMove = move;
+			}
 		}
 
 		System.out.println("# Am evaluat la: " + max);
