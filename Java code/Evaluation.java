@@ -3,6 +3,19 @@ public class Evaluation {
 
 	public final static int[] pieceValue = {200, 9, 5, 3, 3, 1};
 
+	public static int evaluateMove(Bitboard board, Piece.Color playerColor, long[] move) {
+		long[] vsPieces = (playerColor == Piece.Color.WHITE) ? board.blackPieces : 
+															board.whitePieces;
+
+		for(int i = 0; i < vsPieces.length; i++) {
+			if((move[1] & vsPieces[i]) != 0) {
+				return pieceValue[i];
+			}
+		}
+
+		return 0;
+	}
+
 	public static int materialValue(Bitboard board, Piece.Color playerColor) {
 		int[] playerPieces, vsPieces;
 
