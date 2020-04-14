@@ -87,11 +87,10 @@ public class Game {
 		if(myMove == null) {
 			sendToXboard("resign\n");
 		} else {
-			board.makeMove(myMove, myColor);
-
+			board.makeMove(myMove, myColor, null);
 			String convertedMove = "move " + Move.convertPositions(myMove) + "\n";
-			sendToXboard(convertedMove);
 			Debug.displayBoard(this);
+			sendToXboard(convertedMove);
 		}
 	}
 
@@ -187,15 +186,16 @@ public class Game {
 	public void moveCommand(String word) {
 		long[] move = Move.convertMove(word);
 
-		if(Move.isCastling(word)) {
-			board.makeCastling(move, turnColor);
-		} else {
-			board.makeMove(move, turnColor);
-			if(word.length() == 5) {
-				board.pawnPromotion(move[1], turnColor, word.charAt(4));	
-			}
-		}
+		// if(Move.isCastling(word)) {
+		// 	board.makeCastling(move, turnColor);
+		// } else {
+		// 	board.makeMove(move, turnColor);
+		// 	if(word.length() == 5) {
+		// 		board.pawnPromotion(move[1], turnColor, word.charAt(4));	
+		// 	}
+		// }
 
+		board.makeMove(move, turnColor, Move.isPawnPromotion(word));
 		Debug.displayBoard(this);
 		
 		if(isPlaying) {
@@ -203,6 +203,8 @@ public class Game {
 		} else {
 			switchTurnColor();
 		}
+
+		System.out.println(board.blackPieces[1]);
 	}
 
 	/**
@@ -250,6 +252,7 @@ public class Game {
 	 * @param args unsed.
 	 */
 	public static void main(String[] args) {
+		Magic.generateRays();
 		Game game = new Game();
 		game.executeCommands();
 	}
