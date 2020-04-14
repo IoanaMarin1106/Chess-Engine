@@ -12,240 +12,78 @@ import java.util.ArrayList;
  */
 public final class Bishop extends Piece {
 
-	/**
- 	 * Method which checks if a Bishop meets a collision by
- 	 * performing the given move.
- 	 * @param srcRank the line on which the Bishop is initially located.
- 	 * @param srcFile the column on which the Bishop is initially located.
- 	 * @param destRank the line on which the Bishop is after the move.
- 	 * @param destFile the column on which the Bishop is after the move.
- 	 * @param allPieces the current state of the board.
- 	 * @return true in case the Bishop meets a collion, false otherwise.
- 	 */
-	public static boolean meetCollision(
-		int srcRank, int srcFile,
-		int destRank, int destFile,
-		long allPieces
-		) {
-		
-		if(srcRank < destRank) {
-			if(srcFile < destFile) {
-				for(int i = 1; i < (destRank - srcRank); i++) {
-					long rank = Bitboard.RANKS[srcRank + i];
-					long file = Bitboard.FILES[srcFile + i];
+	public static long bishopAttacksMap(int tile, long blockers) {
+		long attacks = 0;
 
-					if(((rank & file) & allPieces) != 0) {
-						return true;
-					}
-				}
-			} else {
-				for(int i = 1; i < (destRank - srcRank); i++) {
-					long rank = Bitboard.RANKS[srcRank + i];
-					long file = Bitboard.FILES[srcFile - i];
-
-					if(((rank & file) & allPieces) != 0) {
-						return true;
-					}
-				}
-			}
-		} else {
-			if(srcFile < destFile) {
-				for(int i = 1; i < (srcRank - destRank); i++) {
-					long rank = Bitboard.RANKS[srcRank - i];
-					long file = Bitboard.FILES[srcFile + i];
-
-					if(((rank & file) & allPieces) != 0) {
-						return true;
-					}
-				}
-			} else {
-				for(int i = 1; i < (srcRank - destRank); i++) {
-					long rank = Bitboard.RANKS[srcRank - i];
-					long file = Bitboard.FILES[srcFile - i];
-
-					if(((rank & file) & allPieces) != 0) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 *	Method which checks if a move is valid. This method returns
-	 *	true if the move is valid for the Bishop piece, for instance,
-	 *	the Bishop can only move diagonally.
-	 *	@param move the move to be checked.
-	 *	@param allPieces the current state of the board.
-	 *	@return true for valid move, false otherwise. 
-	 */
-	public static boolean isValidMove(long src, long dest, long allPieces) {
-
-		int srcRank = Bitboard.getRank(src), srcFile = Bitboard.getFile(src);
-		int destRank = Bitboard.getRank(dest), destFile = Bitboard.getFile(dest);
-
-		if(Math.abs(srcRank - destRank) == Math.abs(srcFile - destFile)) {
-			if(!meetCollision(srcRank, srcFile, destRank, destFile, allPieces)) {
-				return true;
-			}
+		attacks |= Magic.raysNW[tile];
+		if((Magic.raysNW[tile] & blockers) != 0) {
+			int blockerTile = Long.numberOfTrailingZeros(Magic.raysNW[tile] & blockers);
+			attacks &= ~Magic.raysNW[blockerTile];
 		}
 
-		return false;
+		attacks |= Magic.raysNE[tile];
+		if((Magic.raysNE[tile] & blockers) != 0) {
+			int blockerTile = Long.numberOfTrailingZeros(Magic.raysNE[tile] & blockers);
+			attacks &= ~Magic.raysNE[blockerTile];
+		}
+
+		attacks |= Magic.raysSE[tile];
+		if((Magic.raysSE[tile] & blockers) != 0) {
+			int blockerTile = 63 - Long.numberOfLeadingZeros(Magic.raysSE[tile] & blockers);
+			attacks &= ~Magic.raysSE[blockerTile];
+		}
+
+		attacks |= Magic.raysSW[tile];
+		if((Magic.raysSW[tile] & blockers) != 0) {
+			int blockerTile = 63 - Long.numberOfLeadingZeros(Magic.raysSW[tile] & blockers);
+			attacks &= ~Magic.raysSW[blockerTile];
+		}
+
+		return attacks;
 	}
 
 	public static ArrayList<long[]> generateMoves(
-		Piece.Type type, Piece.Color color, Bitboard board, boolean isQueen
+		Piece.Type type, Piece.Color color, long bishops, long attackerPieces, long defenderPieces
 		) {
 
 		ArrayList<long[]> moves = new ArrayList<long[]>();
-		long pieces, attackerPieces, allPieces;
 
-		if(color == Piece.Color.WHITE) {
-			pieces = board.whitePieces[isQueen ? 1 : 3];
-			attackerPieces = board.getAllPieces(board.whitePieces);
-			allPieces = (attackerPieces | board.getAllPieces(board.blackPieces));
-		} else {
-			pieces = board.blackPieces[isQueen ? 1 : 3];
-			attackerPieces = board.getAllPieces(board.blackPieces);
-			allPieces = (attackerPieces | board.getAllPieces(board.whitePieces));
-		}
+		long blockers = attackerPieces | defenderPieces;
 
-		while(pieces != 0) {
-			long src = 1;
+		while(bishops != 0) {
+			int tile = Long.numberOfTrailingZeros(bishops);
+			long src = (1L << tile);
+			bishops = bishops & (~(1L << tile));
 
-			while((src & pieces) == 0) {
-				src = (src << 1);
-			}
-			
-			pieces = (pieces & (~src));
+			long attacks = (bishopAttacksMap(tile, blockers) & (~attackerPieces));
 
-			long dest;
+			while(attacks != 0) {
+				long dest = (1L << Long.numberOfTrailingZeros(attacks));
+				attacks = (attacks & (~dest));
 
-			int srcRank = Bitboard.getRank(src), srcFile = Bitboard.getFile(src);
-
-			int rank, file;
-
-			rank = srcRank - 1;
-			file = srcFile - 1;
-
-			while(rank >= 0 && file >= 0) {
-				dest = (Bitboard.RANKS[rank] & Bitboard.FILES[file]);
-
-				if((dest & attackerPieces) == 0 && isValidMove(src, dest, allPieces)) {
-					moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
-				}
-
-				rank--;
-				file--;
-			}
-
-			rank = srcRank - 1;
-			file = srcFile + 1;
-
-			while(rank >= 0 && file < 8) {
-				dest = (Bitboard.RANKS[rank] & Bitboard.FILES[file]);
-
-				if((dest & attackerPieces) == 0 && isValidMove(src, dest, allPieces)) {
-					moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
-				}
-
-				rank--;
-				file++;
-			}
-
-			rank = srcRank + 1;
-			file = srcFile - 1;
-
-			while(rank < 8 && file >= 0) {
-				dest = (Bitboard.RANKS[rank] & Bitboard.FILES[file]);
-
-				if((dest & attackerPieces) == 0 && isValidMove(src, dest, allPieces)) {
-					moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
-				}
-
-				rank++;
-				file--;
-			}
-
-			rank = srcRank + 1;
-			file = srcFile + 1;
-
-			while(rank < 8 && file < 8) {
-				dest = (Bitboard.RANKS[rank] & Bitboard.FILES[file]);
-
-				if((dest & attackerPieces) == 0 && isValidMove(src, dest, allPieces)) {
-					moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
-				}
-
-				rank++;
-				file++;
+				moves.add(new long[] {src, dest});
 			}
 		}
 
 		return moves;
 	}
 
-	// /**
-	//  *	Method which generates an ArrayList of possible moves for
-	//  *	the Bishop piece. It only generates valid moves.
-	//  *	@param pieces only the positions on which the Bishops are on the board.
-	//  *	@return an array with all moves possible for the Bishop.
-	//  */
-	// public static ArrayList<long[]> generateMoves(long pieces) {
-	// 	ArrayList<long[]> moves = new ArrayList<long[]>();
+	public static long generateMovesMap(Color color, long bishops, long attackerPieces, long defenderPieces) {
+		long attacksMap = 0L;
+		long blockers = attackerPieces | defenderPieces;
 
-	// 	while(pieces != 0) {
-	// 		long src = 1;
+		while(bishops != 0) {
+			int tile = Long.numberOfTrailingZeros(bishops);
+			bishops = bishops & (~(1L << tile));
 
-	// 		while((src & pieces) == 0) {
-	// 			src = (src << 1);
-	// 		}
+			long attacks = bishopAttacksMap(tile, blockers);
 
-	// 		pieces = (pieces & (~src));
+			attacksMap |= attacks;
+		}
 
-	// 		int srcRank = Bitboard.getRank(src), srcFile = Bitboard.getFile(src);
+		attacksMap &= ~attackerPieces;
 
-	// 		int rank, file;
-
-	// 		rank = srcRank - 1;
-	// 		file = srcFile - 1;
-
-	// 		while(rank >= 0 && file >= 0) {
-	// 			moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
-	// 			rank--;
-	// 			file--;
-	// 		}
-
-	// 		rank = srcRank - 1;
-	// 		file = srcFile + 1;
-
-	// 		while(rank >= 0 && file < 8) {
-	// 			moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
-	// 			rank--;
-	// 			file++;
-	// 		}
-
-	// 		rank = srcRank + 1;
-	// 		file = srcFile - 1;
-
-	// 		while(rank < 8 && file >= 0) {
-	// 			moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
-	// 			rank++;
-	// 			file--;
-	// 		}
-
-	// 		rank = srcRank + 1;
-	// 		file = srcFile + 1;
-
-	// 		while(rank < 8 && file < 8) {
-	// 			moves.add(new long[] {src, (Bitboard.RANKS[rank] & Bitboard.FILES[file])});
-	// 			rank++;
-	// 			file++;
-	// 		}
-	// 	}
-
-	// 	return moves;
-	// }
+		return attacksMap;
+	}
 }
 
