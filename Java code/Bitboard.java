@@ -85,6 +85,8 @@ public class Bitboard {
 	private long[] lastWhiteMove = null;
 	private long[] lastBlackMove = null;
 
+	private long usedMask = 0xFFFFFFFFFFFFFFFFL;
+
 	/**
 	 * Default constructor for a Bitboard, which resets the board's
 	 * initial positions.
@@ -124,15 +126,15 @@ public class Bitboard {
 	 * mask and the given position have any overlapping bits.
 	 * @param position the given position of a piece.
 	 */
-	public static int getRank(long position) {
-		for(int i = 0; i < RANKS.length; i++) {
-			if((position & RANKS[i]) != 0) {
-				return i;
-			}
-		}
+	// public static int getRank(long position) {
+	// 	for(int i = 0; i < RANKS.length; i++) {
+	// 		if((position & RANKS[i]) != 0) {
+	// 			return i;
+	// 		}
+	// 	}
 
-		return 0;
-	}
+	// 	return 0;
+	// }
 
 	/**
 	 * Method which finds on which file it's a position and returns it.
@@ -140,15 +142,15 @@ public class Bitboard {
 	 * mask and the given position have any overlapping bits.
 	 * @param position the given position of a piece.
 	 */
-	public static int getFile(long position) {
-		for(int i = 0; i < FILES.length; i++) {
-			if((position & FILES[i]) != 0) {
-				return i;
-			}
-		}
+	// public static int getFile(long position) {
+	// 	for(int i = 0; i < FILES.length; i++) {
+	// 		if((position & FILES[i]) != 0) {
+	// 			return i;
+	// 		}
+	// 	}
 
-		return 0;
-	}
+	// 	return 0;
+	// }
 
 	/**
 	 * Method which adds all the bits of an array to create a bitmap
@@ -227,7 +229,15 @@ public class Bitboard {
 	 * of the move.
 	 * @param color the color that is on move.
 	 */
-	public void makeMove(long[] move, Piece.Color color) {
+	public void makeMove(long[] move, Piece.Color color, Piece.Type promotionType) {
+		if((move[0] & usedMask) != 0) {
+			usedMask = usedMask & (~move[0]);
+		}
+
+		if(makeCastling(move, color) == true) {
+			return;
+		}
+
 		long[] srcPieces = (color == Piece.Color.WHITE) ? whitePieces : blackPieces;
 		long[] destPieces = (color == Piece.Color.WHITE) ? blackPieces : whitePieces;
 
@@ -237,6 +247,7 @@ public class Bitboard {
 
 		if(type == Piece.Type.PAWN) {
 			enPassant(move, color, type);
+			pawnPromotion(move[1], color, promotionType);
 		}
 
 		if(color == Piece.Color.WHITE) {
@@ -251,6 +262,10 @@ public class Bitboard {
 	 */
 	public void enPassant(long[] move, Piece.Color color, Piece.Type type) {
 		if(color == Piece.Color.WHITE && lastBlackMove != null && (move[0] & RANKS[4]) != 0) {
+			if((getAllPieces(blackPieces) & move[1]) != 0) {
+				return;
+			}
+
 			if(move[1] == (move[0] << 9)) {
 				if((blackPieces[5] & (move[0] << 1)) != 0 && (move[0] << 1) == lastBlackMove[1]) {
 					blackPieces[5] = blackPieces[5] & (~(move[0] << 1));
@@ -262,7 +277,11 @@ public class Bitboard {
 					remainingBlackPieces[5]--;
 				}
 			}
-		} else if(lastWhiteMove != null && (move[0] & RANKS[3]) != 0) {
+		} else if(color == Piece.Color.BLACK && lastWhiteMove != null && (move[0] & RANKS[3]) != 0) {
+			if((getAllPieces(whitePieces) & move[1]) != 0) {
+				return;
+			}
+
 			if(move[1] == (move[0] >>> 9)) {
 				if((whitePieces[5] & (move[0] >>> 1)) != 0 && (move[0] >>> 1) == lastWhiteMove[1]) {
 					whitePieces[5] = whitePieces[5] & (~(move[0] >>> 1));
@@ -280,23 +299,54 @@ public class Bitboard {
 	/**
 	 *
 	 */
-	public void pawnPromotion(long pos, Piece.Color color, char newType) {
+	public void pawnPromotion(long pos, Piece.Color color, Piece.Type newType) {
+		int indexNewType;
+
+		if((color == Piece.Color.WHITE && (pos & RANKS[7]) != 0) ||
+			(color == Piece.Color.BLACK && (pos & RANKS[0]) != 0)) {
+			if(newType != null) {
+				indexNewType = newType.getIndex();
+			} else {
+				indexNewType = 1;
+			}
+		} else {
+			return;
+		}
+
 		long[] pieces = (color == Piece.Color.WHITE) ? whitePieces : blackPieces;
 		int[] remainingPieces = (color == Piece.Color.WHITE) ? remainingWhitePieces :
 															remainingBlackPieces;
-		int indexNewType = Piece.getTypeIndex(newType);
 
 		unsetPosition(pieces, 5, pos);
 		pieces[indexNewType] = pieces[indexNewType] | pos;
 		
 		remainingPieces[5]--;
 		remainingPieces[indexNewType]++;
+
 	}
 
 	/**
 	 *
 	 */
-	public void makeCastling(long[] move, Piece.Color color) {
+	public boolean makeCastling(long[] move, Piece.Color color) {
+		if(color == Piece.Color.WHITE) {
+			if(move[0] != (1L << 4) || (move[1] != (1L << 2) && move[1] != (1L << 6))) {
+				return false;
+			}
+
+			if((move[0] != whitePieces[0])) {
+				return false;
+			}
+		} else {
+			if(move[0] != (1L << 60) || (move[1] != (1L << 58) && move[1] != (1L << 62))) {
+				return false;
+			}
+
+			if((move[0] != blackPieces[0])) {
+				return false;
+			}
+		}
+
 		long[] pieces = (color == Piece.Color.WHITE) ? whitePieces : blackPieces;
 		pieces[0] = pieces[0] & (~move[0]);
 		pieces[0] = pieces[0] | move[1];
@@ -308,6 +358,56 @@ public class Bitboard {
 			pieces[2] = pieces[2] & (~(move[0] << 3));
 			pieces[2] = pieces[2] | (move[1] >>> 1);
 		}
+
+		return true;
+	}
+
+	/**
+	 * trebuie sa verificam ca nu trece prin sah
+	 */
+	public ArrayList<long[]> generateCastling(Piece.Color color) {
+		ArrayList<long[]> moves = new ArrayList<long[]>();
+		long pieces = (getAllPieces(whitePieces) | getAllPieces(blackPieces));
+
+		// System.out.println("############# 1\n");
+
+		if(color == Piece.Color.WHITE && whitePieces[0] == (1L << 4) && (usedMask & (1L << 4)) != 0) {
+			// System.out.println("############# 2\n");
+			if((usedMask & 1L) != 0) {
+				// System.out.println("############# 3\n");
+				if((pieces & (1L << 1)) == 0 && (pieces & (1L << 2)) == 0 && (pieces & (1L << 3)) == 0) {
+					// System.out.println("############# 4\n");
+					moves.add(new long[] {(1L << 4), (1L << 2)});
+				}
+			}
+
+			if((usedMask & (1L << 7)) != 0) {
+				// System.out.println("############# 5\n");
+				if((pieces & (1L << 5)) == 0 && (pieces & (1L << 6)) == 0) {
+					// System.out.println("############# 6\n");
+					moves.add(new long[] {(1L << 4), (1L << 6)});
+				}
+			}
+		} else if(color == Piece.Color.BLACK && blackPieces[0] == (1L << 60) && (usedMask & (1L << 60)) != 0) {
+			// System.out.println("############# 7\n");
+			if((usedMask & (1L << 56)) != 0) {
+				// System.out.println("############# 8\n");
+				if((pieces & (1L << 57)) == 0 && (pieces & (1L << 58)) == 0 && (pieces & (1L << 59)) == 0) {
+					// System.out.println("############# 9\n");
+					moves.add(new long[] {(1L << 60), (1L << 58)});
+				}
+			}
+
+			if((usedMask & (1L << 63)) != 0) {
+				// System.out.println("############# 10\n");
+				if((pieces & (1L << 61)) == 0 && (pieces & (1L << 62)) == 0) {
+					// System.out.println("############# 11\n");
+					moves.add(new long[] {(1L << 60), (1L << 62)});
+				}
+			}
+		}
+
+		return moves;
 	}
 
 	/**
@@ -325,11 +425,33 @@ public class Bitboard {
 
 		ArrayList<long[]> moves = new ArrayList<long[]>();
 
+		if(isCheck(color) == false) {
+			moves.addAll(generateCastling(color));
+		}
+
+		long attackerPieces, defenderPieces;
+
+		if(color == Piece.Color.WHITE) {
+			attackerPieces = getAllPieces(whitePieces);
+			defenderPieces = getAllPieces(blackPieces);
+		} else {
+			attackerPieces = getAllPieces(blackPieces);
+			defenderPieces = getAllPieces(whitePieces);
+		}
+
 		/* Goes through each piece and tries to find a valid move.
 		 * The order of the pieces is: Pawn, Knight, Bishop, Rook, Queen, King.
 		 */
+		// for(int i = 5; i >= 0; i--) {
+		// 	moves.addAll(Piece.generateMoves(Piece.getType(i), color, 
+		// 		((color == Piece.Color.WHITE) ? whitePieces[i] : blackPieces[i]),
+		// 		attackerPieces, defenderPieces));
+		// }
+
 		for(int i = 5; i >= 0; i--) {
-			moves.addAll(Piece.generateMoves(Piece.getType(i), color, this));
+			Collections.addAll(moves, (Piece.generateMoves(Piece.getType(i), color, 
+				((color == Piece.Color.WHITE) ? whitePieces[i] : blackPieces[i]),
+				attackerPieces, defenderPieces)).toArray(new long[0][2]));
 		}
 
 		ArrayList<long[]> old = moves;
@@ -337,7 +459,7 @@ public class Bitboard {
 
 		for(long[] move : old) {
 			Bitboard nextState = (Bitboard)this.clone();
-			nextState.makeMove(move, color);
+			nextState.makeMove(move, color, null);
 
 			if(nextState.isCheck(color) == false) {
 				moves.add(move);
@@ -357,20 +479,25 @@ public class Bitboard {
 		long[] attacker = (defenderColor == Piece.Color.WHITE) ? blackPieces : whitePieces;
 		Piece.Color attackerColor = (defenderColor == Piece.Color.WHITE) ? Piece.Color.BLACK :
 																		Piece.Color.WHITE;
-
-		ArrayList<long[]> moves;
-
-		for(int i = 5; i >= 0; i--) {
-			moves = Piece.generateMoves(Piece.getType(i), attackerColor, this);
-
-			for(long[] move : moves) {
-				if(move[1] == defender[0]) {
-					return true;
-				}
-			}
+		long attackerPieces, defenderPieces;
+		if(defenderColor == Piece.Color.WHITE) {
+			attackerPieces = getAllPieces(blackPieces);
+			defenderPieces = getAllPieces(whitePieces);
+		} else {
+			attackerPieces = getAllPieces(whitePieces);
+			defenderPieces = getAllPieces(blackPieces);
 		}
 
-		return false;
+		long attacksMap;
+
+		attacksMap = Pawn.generateMovesMap(attackerColor, attacker[5], attackerPieces, defenderPieces) |
+						Rook.generateMovesMap(attackerColor, attacker[2], attackerPieces, defenderPieces) |
+						Bishop.generateMovesMap(attackerColor, attacker[3], attackerPieces, defenderPieces) |
+						Queen.generateMovesMap(attackerColor, attacker[1], attackerPieces, defenderPieces) |
+						Knight.generateMovesMap(attackerColor, attacker[4], attackerPieces, defenderPieces) |
+						King.generateMovesMap(attackerColor, attacker[0], attackerPieces, defenderPieces);
+
+		return ((attacksMap & defender[0]) != 0);
 	}
 
 	public boolean gameOver() {
