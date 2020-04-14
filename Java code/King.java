@@ -10,57 +10,74 @@ import java.util.ArrayList;
  *
  */
 public final class King extends Piece {
-	/**
-	 * Method which checks if a move is valid. This method
-	 * returns true if the move is valid for the King piece, 
-	 * for instance, it will return false if a player tries to 
-	 * move two squares with the King.
-	 * @param move the move to be checked.
-	 * @return true for valid move, false otherwise.
-	 */
-	public static boolean isValidMove(long src, long dest) {		
-		if(src << 1 == dest && (src & Bitboard.FILES[0]) == 0) return true;
-		if(src >>> 1 == dest && (src & Bitboard.FILES[7]) == 0) return true;
-
-		if((src & Bitboard.RANKS[0]) == 0) {
-			if(src >>> 9 == dest && (src & Bitboard.FILES[7]) == 0) return true;
-			if(src >>> 8 == dest) return true;
-			if(src >>> 7 == dest && (src & Bitboard.FILES[0]) == 0) return true;
-		}
-
-		if((src & Bitboard.RANKS[7]) == 0) {
-			if(src << 9 == dest && (src & Bitboard.FILES[0]) == 0) return true;
-			if(src << 8 == dest) return true;
-			if(src << 7 == dest && (src & Bitboard.FILES[7]) == 0) return true;
-		}
-		
-		return false;
-	}
 
 	public static ArrayList<long[]> generateMoves(
-		Piece.Type type, Piece.Color color, Bitboard board
+		Piece.Type type, Piece.Color color, long king, long attackerPieces, long defenderPieces
 		) {
 
 		ArrayList<long[]> moves = new ArrayList<long[]>();
-		long src, attackerPieces;
 
-		if(color == Piece.Color.WHITE) {
-			src = board.whitePieces[0];
-			attackerPieces = board.getAllPieces(board.whitePieces);
-		} else {
-			src = board.blackPieces[0];
-			attackerPieces = board.getAllPieces(board.blackPieces);
+		long attackWest = ((king & (~Bitboard.FILES[7])) >>> 1);
+
+		if(attackWest != 0) {
+			if((attackWest & (~attackerPieces)) != 0) {
+				moves.add(new long[] {king, attackWest});
+			}
+
+			if((((attackWest & (~Bitboard.RANKS[0])) >>> 8) & (~attackerPieces)) != 0) {
+				moves.add(new long[] {king, ((attackWest & (~Bitboard.RANKS[0])) >>> 8)});
+			}
+
+			if((((attackWest & (~Bitboard.RANKS[7])) << 8) & (~attackerPieces)) != 0) {
+				moves.add(new long[] {king, ((attackWest & (~Bitboard.RANKS[7])) << 8)});
+			}
+
 		}
 
-		long[] dest = {(src << 9), (src << 8), (src << 7), (src >>> 9), (src >>> 8),
-					(src >>> 7), (src << 1), (src >>> 1)};
+		long attackEast = ((king & (~Bitboard.FILES[0])) << 1);
 
-		for(int i = 0; i < dest.length; i++) {
-			if((dest[i] & attackerPieces) == 0 && isValidMove(src, dest[i])) {
-				moves.add(new long[] {src, dest[i]});
+		if(attackEast != 0) {
+			if((attackEast & (~attackerPieces)) != 0) {
+				moves.add(new long[] {king, attackEast});
+			}
+
+			if((((attackEast & (~Bitboard.RANKS[0])) >>> 8) & (~attackerPieces)) != 0) {
+				moves.add(new long[] {king, ((attackEast & (~Bitboard.RANKS[0])) >>> 8)});
+			}
+
+			if((((attackEast & (~Bitboard.RANKS[7])) << 8) & (~attackerPieces)) != 0) {
+				moves.add(new long[] {king, ((attackEast & (~Bitboard.RANKS[7])) << 8)});
 			}
 		}
 
+		long attackUp = ((king & (~Bitboard.RANKS[7])) << 8);
+
+		if((attackUp & (~attackerPieces)) != 0) {
+			moves.add(new long[] {king, attackUp});
+		}
+
+		long attackDown = ((king & Bitboard.RANKS[0]) >>> 8);
+
+		if((attackDown & (~attackerPieces)) != 0) {
+			moves.add(new long[] {king, attackDown});
+		}
+
 		return moves;
+	}
+
+	public static long generateMovesMap(Color color, long king, long attackerPieces, long defenderPieces) {
+		long attacks = 0L;
+
+		attacks |= ((king & (~Bitboard.FILES[7])) >>> 1);
+		attacks |= ((king & (~Bitboard.FILES[0])) << 1);
+
+		king |= attacks;
+
+		attacks |= ((king & (~Bitboard.RANKS[0])) >>> 8);
+		attacks |= ((king & (~Bitboard.RANKS[7])) << 8);
+
+		attacks &= ~attackerPieces;
+
+		return attacks;
 	}
 }
