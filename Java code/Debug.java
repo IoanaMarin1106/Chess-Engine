@@ -87,7 +87,29 @@ public class Debug {
 			
 			System.out.println();
 		}
-	}	
+	}
+
+	public static void displayMagicRays(long rays) {
+		char[] board = new char[64];
+
+		for(int i = 0; i < 64; i++) {
+			board[i] = '0';
+
+			if((rays & (1L << i)) != 0)
+				board[i] = '1';
+		}
+
+		for(int i = 7; i >= 0; i--) {
+			System.out.print("# ");
+			System.out.print(i+1 + " ");
+			
+			for(int j = 0; j < 8; j++) {
+				System.out.print(board[8*i + j] + " ");
+			}
+			
+			System.out.println();
+		}
+	}
 	
 	/**
 	 * Method that tests valid moves for every type
