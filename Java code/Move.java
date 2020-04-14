@@ -56,16 +56,23 @@ public final class Move {
 		return true;
 	}
 
-	public static boolean isCastling(String move) {
-		if(move.equals("e1g1") || move.equals("e1c1")) {
-			return true;
+	public static Piece.Type isPawnPromotion(String move) {
+		if(move.length() != 5) {
+			return null;
 		}
 
-		if(move.equals("e8g8") || move.equals("e8c8")) {
-			return true;
+		switch(move.charAt(4)) {
+			case 'q':
+				return Piece.Type.QUEEN;
+			case 'r':
+				return Piece.Type.ROOK;
+			case 'b':
+				return Piece.Type.BISHOP;
+			case 'n':
+				return Piece.Type.KNIGHT;
+			default:
+				return null;
 		}
-
-		return false;
 	}
 
 	/**
