@@ -7,9 +7,9 @@ public class Negamax {
 
 
 		if(depth == 0 || board.gameOver()) {
-			Debug.displayBoard(board);
+			// Debug.displayBoard(board);
 			int eval = Evaluation.evaluate(board, playerColor);
-			System.out.println("# eval = " + eval);
+			// System.out.println("# eval = " + eval);
 			return eval;
 		}
 
@@ -20,12 +20,7 @@ public class Negamax {
 
 		for(long[] move : moves) {
 			Bitboard newState = (Bitboard)board.clone();
-
-			newState.makeMove(move, playerColor);
-
-			// if(newState.isCheck(playerColor)) {
-			// 	continue;
-			// }
+			newState.makeMove(move, playerColor, null);
 
 			int score = -negamax(newState, vsColor, -beta, -alpha, depth - 1);
 
@@ -56,13 +51,13 @@ public class Negamax {
 
 		for(long[] move : moves) {
 			Bitboard newState = (Bitboard)board.clone();
-			newState.makeMove(move, playerColor);
+			newState.makeMove(move, playerColor, null);
 
 			// if(newState.isCheck(playerColor)) {
 			// 	continue;
 			// }
 
-			int score = -negamax(newState, vsColor, -beta, -alpha, 2);
+			int score = -negamax(newState, vsColor, -beta, -alpha, 4);
 
 			if(score > max) {
 				max = score;
