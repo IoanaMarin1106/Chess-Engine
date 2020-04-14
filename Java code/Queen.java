@@ -12,12 +12,17 @@ import java.util.ArrayList;
 public final class Queen extends Piece {
 	
 	public static ArrayList<long[]> generateMoves(
-		Piece.Type type, Piece.Color color, Bitboard board
+		Piece.Type type, Piece.Color color, long queen, long attackerPieces, long defenderPieces
 		) {
 
-		ArrayList<long[]> moves = Rook.generateMoves(type, color, board, true);
-		moves.addAll(Bishop.generateMoves(type, color, board, true));
+		ArrayList<long[]> moves = Rook.generateMoves(type, color, queen, attackerPieces, defenderPieces);
+		moves.addAll(Bishop.generateMoves(type, color, queen, attackerPieces, defenderPieces));
 		
 		return moves;
+	}
+
+	public static long generateMovesMap(Color color, long queen, long attackerPieces, long defenderPieces) {
+		return (Bishop.generateMovesMap(color, queen, attackerPieces, defenderPieces) | 
+			Rook.generateMovesMap(color, queen, attackerPieces, defenderPieces));
 	}
 }
