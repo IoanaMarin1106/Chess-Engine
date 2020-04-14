@@ -85,22 +85,22 @@ public abstract class Piece {
 
 	public static ArrayList<long[]> generateMoves(
 		Type type, Color color,
-		Bitboard board
+		long pieces, long attackerPieces, long defenderPieces
 		) {
 
 		switch(type) {
 			case KING:
-				return King.generateMoves(type, color, board);
+				return King.generateMoves(type, color, pieces, attackerPieces, defenderPieces);
 			case QUEEN:
-				return Queen.generateMoves(type, color, board);
+				return Queen.generateMoves(type, color, pieces, attackerPieces, defenderPieces);
 			case ROOK:
-				return Rook.generateMoves(type, color, board, false);
+				return Rook.generateMoves(type, color, pieces, attackerPieces, defenderPieces);
 			case BISHOP:
-				return Bishop.generateMoves(type, color, board, false);
+				return Bishop.generateMoves(type, color, pieces, attackerPieces, defenderPieces);
 			case KNIGHT:
-				return Knight.generateMoves(type, color, board);
+				return Knight.generateMoves(type, color, pieces, attackerPieces, defenderPieces);
 			case PAWN:
-				return Pawn.generateMoves(type, color, board);
+				return Pawn.generateMoves(type, color, pieces, attackerPieces, defenderPieces);
 			default:
 				return null;
 		}
