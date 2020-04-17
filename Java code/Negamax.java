@@ -1,6 +1,9 @@
 import java.util.*;
 
 public class Negamax {
+
+	public final static int DEPTH = 5;
+
 	public static int negamax(
 		Bitboard board, Piece.Color playerColor,
 		int alpha, int beta, int depth) {
@@ -57,7 +60,7 @@ public class Negamax {
 			// 	continue;
 			// }
 
-			int score = -negamax(newState, vsColor, -beta, -alpha, 4);
+			int score = -negamax(newState, vsColor, -beta, -alpha, DEPTH - 1);
 
 			if(score > max) {
 				max = score;
