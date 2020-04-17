@@ -87,8 +87,8 @@ public class Evaluation {
 		{-20,-10,-10, -5, -5,-10,-10,-20},
 		{-10,  0,  0,  0,  0,  0,  0,-10},
 		{-10,  0,  5,  5,  5,  5,  0,-10},
- 		{-5,  0,  5,  5,  5,  5,  0, -5},
-		{ 0,  0,  5,  5,  5,  5,  0, -5},
+ 		{ -5,  0,  5,  5,  5,  5,  0, -5},
+		{  0,  0,  5,  5,  5,  5,  0, -5},
 		{-10,  5,  5,  5,  5,  5,  0,-10},
 		{-10,  0,  5,  0,  0,  0,  0,-10},
 		{-20,-10,-10, -5, -5,-10,-10,-20}
@@ -105,6 +105,16 @@ public class Evaluation {
 	    { 20, 30, 10,  0,  0, 10, 30, 20}
 	};
 
+	public final static int kingTableValue_EG[][] = {
+		{-50,-40,-30,-20,-20,-30,-40,-50},
+		{-30,-20,-10,  0,  0,-10,-20,-30},
+		{-30,-10, 20, 30, 30, 20,-10,-30},
+		{-30,-10, 30, 40, 40, 30,-10,-30},
+		{-30,-10, 30, 40, 40, 30,-10,-30},
+		{-30,-10, 20, 30, 30, 20,-10,-30},
+		{-30,-30,  0,  0,  0,  0,-30,-30},
+		{-50,-30,-30,-30,-30,-30,-30,-50}
+	};
 
 
 	public final static int[][][] tableValue = {
@@ -154,11 +164,21 @@ public class Evaluation {
 		// }
 
 		if(playerColor == Piece.Color.WHITE) {
-			for(int i = 0; i < tableValue.length; i++) {
+			int[][] kingValue = (board.isEndgame() ? kingTableValue_EG : kingTableValue);
+
+			long king = board.whitePieces[0];
+			int tile = Long.numberOfTrailingZeros(king);
+			playerScore += kingValue[7 - tile / 8][tile % 8];
+
+			king = board.blackPieces[0];
+			tile = Long.numberOfTrailingZeros(king);
+			vsScore += kingValue[tile / 8][tile % 8];
+
+			for(int i = 1; i < tableValue.length; i++) {
 				long pieces = board.whitePieces[i];
 
 				while(pieces != 0) {
-					int tile = Long.numberOfTrailingZeros(pieces);
+					tile = Long.numberOfTrailingZeros(pieces);
 					pieces = (pieces & (~(1L << tile)));
 
 					playerScore += tableValue[i][7 - tile / 8][tile % 8];
@@ -167,18 +187,28 @@ public class Evaluation {
 				pieces = board.blackPieces[i];
 
 				while(pieces != 0) {
-					int tile = Long.numberOfTrailingZeros(pieces);
+					tile = Long.numberOfTrailingZeros(pieces);
 					pieces = (pieces & (~(1L << tile)));
 
 					vsScore += tableValue[i][(tile / 8)][tile % 8];
 				}
 			}
 		} else {
-			for(int i = 0; i < tableValue.length; i++) {
+			int[][] kingValue = (board.isEndgame() ? kingTableValue_EG : kingTableValue);
+
+			long king = board.blackPieces[0];
+			int tile = Long.numberOfTrailingZeros(king);
+			playerScore += kingValue[tile / 8][tile % 8];
+
+			king = board.whitePieces[0];
+			tile = Long.numberOfTrailingZeros(king);
+			vsScore += kingValue[7 - tile / 8][tile % 8];
+
+			for(int i = 1; i < tableValue.length; i++) {
 				long pieces = board.whitePieces[i];
 
 				while(pieces != 0) {
-					int tile = Long.numberOfTrailingZeros(pieces);
+					tile = Long.numberOfTrailingZeros(pieces);
 					pieces = (pieces & (~(1L << tile)));
 
 					vsScore += tableValue[i][7 - tile / 8][tile % 8];
@@ -187,7 +217,7 @@ public class Evaluation {
 				pieces = board.blackPieces[i];
 
 				while(pieces != 0) {
-					int tile = Long.numberOfTrailingZeros(pieces);
+					tile = Long.numberOfTrailingZeros(pieces);
 					pieces = (pieces & (~(1L << tile)));
 
 					playerScore += tableValue[i][(tile / 8)][tile % 8];
@@ -199,44 +229,40 @@ public class Evaluation {
 		return (playerScore - vsScore);
 	}
 
-	public static int pawnRankValue(Bitboard board, Piece.Color playerColor) {
-		int playerScore = 0, vsScore = 0;
-
-		long playerPawns, vsPawns;
-
-		if(playerColor == Piece.Color.WHITE) {
-			playerPawns = board.whitePieces[5];
-			vsPawns = board.blackPieces[5];
-		} else {
-			playerPawns = board.blackPieces[5];
-			vsPawns = board.whitePieces[5];
+	public static int populationCount(long x) {
+		int count = 0;
+		while(x != 0) {
+			count++;
+			x &= (x - 1);
 		}
 
-		for(int i = 0; i < Bitboard.RANKS.length; i++) {
-			if((playerPawns & Bitboard.RANKS[i]) != 0) {
-				for(int j = 0; j < Bitboard.FILES.length; j++) {
-					if((playerPawns & Bitboard.RANKS[i] & Bitboard.FILES[j]) != 0) {
-						playerScore += (playerColor == Piece.Color.WHITE) ? i : (7 - i);
-					}
-				}
-			}
-
-			if((vsPawns & Bitboard.RANKS[i]) != 0) {
-				for(int j = 0; j < Bitboard.FILES.length; j++) {
-					if((vsPawns & Bitboard.RANKS[i] & Bitboard.FILES[j]) != 0) {
-						vsScore += (playerColor == Piece.Color.WHITE) ? (7 - i) : i;
-					}
-				}
-			}
-		}
-
-		return (playerScore - vsScore);
+		return count;
 	}
 
 	public static int mobilityValue(Bitboard board, Piece.Color playerColor) {
 		Piece.Color vsColor = (playerColor == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
-		return (board.generateAllMoves(playerColor).size() - board.generateAllMoves(vsColor).size());
+
+		long[] playerPieces;
+		long allPlayerPieces, allVsPieces;
+
+		if(playerColor == Piece.Color.WHITE) {
+			playerPieces = board.whitePieces;
+			allPlayerPieces = board.getAllPieces(board.whitePieces);
+			allVsPieces = board.getAllPieces(board.blackPieces);
+		} else {
+			playerPieces = board.blackPieces;
+			allPlayerPieces = board.getAllPieces(board.blackPieces);
+			allVsPieces = board.getAllPieces(board.whitePieces);
+		}
 		
+		long attacksMap = Pawn.generateMovesMap(playerColor, playerPieces[5], allPlayerPieces, allVsPieces) |
+					Rook.generateMovesMap(playerColor, playerPieces[2], allPlayerPieces, allVsPieces) |
+					Bishop.generateMovesMap(playerColor, playerPieces[3], allPlayerPieces, allVsPieces) |
+					Queen.generateMovesMap(playerColor, playerPieces[1], allPlayerPieces, allVsPieces) |
+					Knight.generateMovesMap(playerColor, playerPieces[4], allPlayerPieces, allVsPieces) |
+					King.generateMovesMap(playerColor, playerPieces[0], allPlayerPieces, allVsPieces);
+
+		return populationCount(attacksMap);
 	}
 
 	public static int evaluate(Bitboard board, Piece.Color playerColor) {
@@ -245,8 +271,11 @@ public class Evaluation {
 		}
 
 		//System.out.println("# TABLE VALUE E = " + tableValue(board, playerColor));
-		return materialValue(board, playerColor) * 752 + tableValue(board, playerColor);// + mobilityValue(board, playerColor);
+		//return materialValue(board, playerColor) * 752 + tableValue(board, playerColor);// + mobilityValue(board, playerColor);
 			//pawnRankValue(board, playerColor) + tableValue(board, playerColor);
+		return materialValue(board, playerColor) * 752 + tableValue(board, playerColor);// +
+				//mobilityValue(board, playerColor);
+		// + pawnRankValue(board, playerColor) * 47;
 	}
 
 	// static int[][] PSQ_TABLE_PAWN_MG = {
