@@ -87,6 +87,8 @@ public class Bitboard {
 
 	private long usedMask = 0xFFFFFFFFFFFFFFFFL;
 
+	private boolean isEndgame = false;
+
 	/**
 	 * Default constructor for a Bitboard, which resets the board's
 	 * initial positions.
@@ -514,6 +516,31 @@ public class Bitboard {
 		} else if(color == Piece.Color.BLACK && remainingWhitePieces[0] == 0) {
 			return true;
 		}
+
+		return false;
+	}
+
+	public boolean isEndgame() {
+		if(isEndgame) {
+			return true;
+		}
+
+		if(whitePieces[1] == 0 && blackPieces[1] == 0) {
+			isEndgame = true;
+			return true;
+		}
+
+		// if(remainingWhitePieces[2] + remainingWhitePieces[3] + remainingWhitePieces[4] +
+		// 	remainingWhitePieces[5] < 7) {
+		// 	isEndgame = true;
+		// 	return true;
+		// }
+
+		// if(remainingBlackPieces[2] + remainingBlackPieces[3] + remainingBlackPieces[4] +
+		// 	remainingBlackPieces[5] < 7) {
+		// 	isEndgame = true;
+		// 	return true;
+		// }
 
 		return false;
 	}
