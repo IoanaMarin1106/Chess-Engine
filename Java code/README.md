@@ -1,4 +1,4 @@
-			PA Project - Chess Engine
+# PA Project - Chess Engine
 
 TEAM Creierul si cerebelii, consisting of:
 
