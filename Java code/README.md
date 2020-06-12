@@ -1,17 +1,20 @@
 			PA Project - Chess Engine
-------------------------------------------------------------------------------
+
 TEAM Creierul si cerebelii, consisting of:
+
 	ghiculescualexandru
 	IoanaMarin1106
 	roxanastiuca
--------------------------------------------------------------------------------
+
 COMPILING INSTRUCTIONS:
+
 	make build -> create .class objects
 	make run -> run executable
 	java Game -> argument for Xboard Long engine->Engine command
 	xboard -debug -fcp "java Game" -> run Xboard directly with our engine
--------------------------------------------------------------------------------
+
 PROJECT STRUCTURE:
+
 	Game is the main class of the project which consists of several input
 	and output processing methods. The input is read line by line, and,
 	depending on the first word read, it calls a certain method for that
@@ -64,8 +67,9 @@ PROJECT STRUCTURE:
 	Debug is a class used only for debugging and, while not necessary for
 	running the project, we decided to leave it in the project seeing as
 	we will use it for further stages (mainly the displayBoard method).
--------------------------------------------------------------------------------
+
 ALGORITHM DESIGN:
+
 	Negamax with alpha-beta prunning
 	-> in Negamax.java;
 	-> basic implementation;
@@ -108,8 +112,9 @@ ALGORITHM DESIGN:
 	-> We used a LinkedHashMap to store a board's state and its score and
 	the depth for which it was calculated. The map had a maximum capacity and
 	it removed the oldest entry when it exceeded that.
--------------------------------------------------------------------------------
+
 ONLINE RESOURCES:
+
 	Negamax:
 	-> https://ocw.cs.pub.ro/courses/pa/laboratoare/laborator-06
 
